@@ -24,6 +24,7 @@ import PopupTemplate from '@arcgis/core/PopupTemplate';
 import SizeVariable from '@arcgis/core/renderers/visualVariables/SizeVariable';
 import RotationVariable from '@arcgis/core/renderers/visualVariables/RotationVariable';
 import { labelSymbol3DLine } from './Label';
+import ColorVariable from '@arcgis/core/renderers/visualVariables/ColorVariable';
 
 /* Chainage Layer  */
 var labelChainage = new LabelClass({
@@ -1501,60 +1502,59 @@ pierAccessLayer.popupTemplate = template;
 /* Tree Cutting and Compensation Layers */
 /* Tree cutting layer */
 export const colorsCutting = ['#71ab48', '#ffff00', '#ffaa00', '#ff0000'];
+const treeCutting3DSymbol = (name: any) => {
+  return new WebStyleSymbol({
+    name: name,
+    styleName: 'EsriThematicTreesStyle',
+  });
+};
 
 const outlineColor = 'gray';
 
-let treeCuttingRenderer = new UniqueValueRenderer({
+const treeCuttingRenderer = new UniqueValueRenderer({
   field: 'Status',
   uniqueValueInfos: [
     {
       value: 1,
       label: 'Cut/Earthballed',
-      symbol: new SimpleMarkerSymbol({
-        size: 5,
-        color: colorsCutting[0], // the first two letters dictate transparency.
-        outline: {
-          width: 0.5,
-          color: outlineColor,
-        },
-      }),
+      symbol: treeCutting3DSymbol('Larix'),
     },
     {
       value: 2,
       label: 'Permit Acquired',
-      symbol: new SimpleMarkerSymbol({
-        size: 5,
-        color: colorsCutting[1], // the first two letters dictate transparency.
-        outline: {
-          width: 0.5,
-          color: outlineColor,
-        },
-      }),
+      symbol: treeCutting3DSymbol('Larix'),
     },
     {
       value: 3,
       label: 'Submitted to DENR',
-      symbol: new SimpleMarkerSymbol({
-        size: 4,
-        color: colorsCutting[2], // the first two letters dictate transparency.
-        outline: {
-          width: 0.5,
-          color: outlineColor,
-        },
-      }),
+      symbol: treeCutting3DSymbol('Larix'),
     },
     {
       value: 4,
       label: 'Ongoing Acquisition of Application Documents',
-      symbol: new SimpleMarkerSymbol({
-        size: 5,
-        color: colorsCutting[3], // the first two letters dictate transparency.
-        outline: {
-          width: 0.5,
-          color: outlineColor,
-        },
-      }),
+      symbol: treeCutting3DSymbol('Larix'),
     },
+  ],
+  visualVariables: [
+    new SizeVariable({
+      axis: 'height',
+      // field: 'SIZE',
+      valueExpression: 'When($feature.Status >= 1, 5, 0)',
+      valueUnit: 'meters',
+    }),
+    new ColorVariable({
+      valueExpression: '$feature.Status',
+      valueExpressionTitle: 'Status Color',
+      stops: [
+        { value: 1, color: '#71AB48' },
+        { value: 2, color: '#FFFF00' },
+        { value: 3, color: '#FFAA00' },
+        { value: 4, color: '#FF0000' },
+      ],
+      legendOptions: {
+        showLegend: false,
+      },
+    }),
   ],
 });
 
@@ -1573,7 +1573,7 @@ export const treeCuttingLayer = new FeatureLayer({
   renderer: treeCuttingRenderer,
   popupTemplate: {
     lastEditInfoEnabled: false,
-    returnGeometry: true,
+    // returnGeometry: true,
     content: [
       {
         type: 'fields',
@@ -1623,39 +1623,37 @@ const treeCompensationRenderer = new UniqueValueRenderer({
     {
       value: 1,
       label: 'Non-Compensable',
-      symbol: new SimpleMarkerSymbol({
-        size: 5,
-        color: colorsCompen[0], // the first two letters dictate transparency.
-        outline: {
-          width: 0.5,
-          color: outlineColor,
-        },
-      }),
+      symbol: treeCutting3DSymbol('Larix'),
     },
     {
       value: 2,
       label: 'For Processing',
-      symbol: new SimpleMarkerSymbol({
-        size: 5,
-        color: colorsCompen[1], // the first two letters dictate transparency.
-        outline: {
-          width: 0.5,
-          color: outlineColor,
-        },
-      }),
+      symbol: treeCutting3DSymbol('Larix'),
     },
     {
       value: 3,
       label: 'Compensated',
-      symbol: new SimpleMarkerSymbol({
-        size: 5,
-        color: colorsCompen[2], // the first two letters dictate transparency.
-        outline: {
-          width: 0.5,
-          color: outlineColor,
-        },
-      }),
+      symbol: treeCutting3DSymbol('Larix'),
     },
+  ],
+  visualVariables: [
+    new SizeVariable({
+      axis: 'height',
+      valueExpression: 'When($feature.Compensation >= 1, 5, 0)',
+      valueUnit: 'meters',
+    }),
+    new ColorVariable({
+      valueExpression: '$feature.Compensation',
+      valueExpressionTitle: 'Status Color',
+      stops: [
+        { value: 1, color: '#0070FF' },
+        { value: 2, color: '#FFFF00' },
+        { value: 3, color: '#71AB48' },
+      ],
+      legendOptions: {
+        showLegend: false,
+      },
+    }),
   ],
 });
 
@@ -1672,7 +1670,7 @@ export const treeCompensationLayer = new FeatureLayer({
   popupTemplate: {
     title: '<h5>{Compensation}</h5>',
     lastEditInfoEnabled: false,
-    returnGeometry: true,
+    // returnGeometry: true,
     content: [
       {
         type: 'fields',
@@ -1714,7 +1712,6 @@ export const treeCompensationLayer = new FeatureLayer({
 });
 
 /* Utility Layers */
-
 // * Utility Point * //
 function customSymbol3D(name: string) {
   return new WebStyleSymbol({

@@ -63,9 +63,8 @@ const lotGroupLayer = new GroupLayer({
 const treeGroupLayer = new GroupLayer({
   title: 'Tree Cutting & Compensation',
   visible: false,
-  visibilityMode: 'exclusive',
+  visibilityMode: 'independent',
   layers: [treeCuttingLayer, treeCompensationLayer],
-  //opacity: 1
 });
 
 const utilityGroupLayer = new GroupLayer({
