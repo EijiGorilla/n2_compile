@@ -91,6 +91,9 @@ export const view = new SceneView({
   center: [120.5793, 15.18],
   zoom: 13,
   viewingMode: 'local',
+  environment: {
+    starsEnabled: false,
+  },
 });
 
 export const basemaps = new BasemapGallery({
