@@ -42,7 +42,7 @@ export async function dateUpdate() {
       const date = new Date(result.attributes.date);
       const year = date.getFullYear();
       const month = monthList[date.getMonth()];
-      const day = date.getDay();
+      const day = date.getDate();
       const final = year < 1990 ? '' : `${month} ${day}, ${year}`;
       return final;
     });
