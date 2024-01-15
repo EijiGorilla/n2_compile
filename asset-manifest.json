@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/n2_compile/static/css/main.c6e9466b.css",
-    "main.js": "/n2_compile/static/js/main.ef2ba084.js",
+    "main.js": "/n2_compile/static/js/main.c37b8281.js",
     "static/js/3583.33f0a29b.chunk.js": "/n2_compile/static/js/3583.33f0a29b.chunk.js",
     "static/js/6935.83e19b09.chunk.js": "/n2_compile/static/js/6935.83e19b09.chunk.js",
     "static/js/4292.fe22b5fb.chunk.js": "/n2_compile/static/js/4292.fe22b5fb.chunk.js",
@@ -531,7 +531,7 @@
     "static/media/SM-Slider_TrackBackground_hover.svg": "/n2_compile/static/media/SM-Slider_TrackBackground_hover.5dcf34ac7d59f98735ad.svg",
     "static/media/SM-Slider_TrackBackground_idle.svg": "/n2_compile/static/media/SM-Slider_TrackBackground_idle.cc7bd7014a003ba1844f.svg",
     "main.c6e9466b.css.map": "/n2_compile/static/css/main.c6e9466b.css.map",
-    "main.ef2ba084.js.map": "/n2_compile/static/js/main.ef2ba084.js.map",
+    "main.c37b8281.js.map": "/n2_compile/static/js/main.c37b8281.js.map",
     "3583.33f0a29b.chunk.js.map": "/n2_compile/static/js/3583.33f0a29b.chunk.js.map",
     "6935.83e19b09.chunk.js.map": "/n2_compile/static/js/6935.83e19b09.chunk.js.map",
     "4292.fe22b5fb.chunk.js.map": "/n2_compile/static/js/4292.fe22b5fb.chunk.js.map",
@@ -954,6 +954,6 @@
   },
   "entrypoints": [
     "static/css/main.c6e9466b.css",
-    "static/js/main.ef2ba084.js"
+    "static/js/main.c37b8281.js"
   ]
 }
