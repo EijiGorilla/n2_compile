@@ -34,7 +34,7 @@ export async function dateUpdate() {
   ];
 
   const query = dateTable.createQuery();
-  query.where = "project = 'N2'" + ' AND ' + "category = 'Land Acquisition'";
+  query.where = "project = 'N2'" + ' AND ' + "category = 'Compiled'";
 
   return dateTable.queryFeatures(query).then((response: any) => {
     const stats = response.features;
