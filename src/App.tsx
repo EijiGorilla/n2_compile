@@ -31,8 +31,11 @@ import LotChart from './components/LotChart';
 import loadable from '@loadable/component';
 import LotProgressChart from './components/lotProgressChart';
 import ViaductProgressChart from './components/ViaductProgressChart';
+import { dateUpdate } from './Query';
 
 function App() {
+  const [asOfDate, setAsOfDate] = useState<undefined | any | unknown>(null);
+
   const mapDiv = useRef(null);
   const layerListDiv = useRef<HTMLDivElement | undefined | any>(null);
   const measurementToolDiv = useRef<HTMLDivElement | undefined | any>(null);
@@ -95,6 +98,10 @@ function App() {
   }, [underground]);
 
   useEffect(() => {
+    dateUpdate().then((response: any) => {
+      setAsOfDate(response);
+    });
+
     if (mapDiv.current) {
       map.ground.navigationConstraint = {
         type: 'none',
@@ -186,7 +193,7 @@ function App() {
             style={{ marginBottom: 'auto', marginTop: 'auto' }}
           />
           <b className="headerTitle">N2 COMPILED</b>
-          <div className="date">As of January 5, 2024</div>
+          <div className="date">{!asOfDate ? '' : 'As of ' + asOfDate}</div>
           <CalciteSegmentedControl
             onCalciteSegmentedControlChange={(event: any) =>
               setCpValueSelected(event.target.selectedItem.id)
