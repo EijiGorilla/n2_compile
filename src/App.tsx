@@ -376,7 +376,7 @@ function App() {
             position: 'fixed',
             zIndex: 1,
             bottom: 10,
-            right: '27%',
+            right: '470px',
             color: 'white',
             backgroundColor: '#2b2b2b',
             paddingLeft: 5,

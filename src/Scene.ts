@@ -6,6 +6,7 @@ import Search from '@arcgis/core/widgets/Search';
 import Expand from '@arcgis/core/widgets/Expand';
 import GroupLayer from '@arcgis/core/layers/GroupLayer';
 import Measurement from '@arcgis/core/widgets/Measurement';
+import Zoom from '@arcgis/core/widgets/Zoom';
 
 import {
   lotLayer,
@@ -203,3 +204,8 @@ export const searchExpand = new Expand({
   expandIconClass: 'esri-icon-search',
   group: 'top-right',
 });
+
+const zoom = new Zoom({
+  view,
+});
+view.ui.add(zoom, { position: 'bottom-right' });
