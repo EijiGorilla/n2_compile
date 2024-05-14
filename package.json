@@ -1,11 +1,11 @@
 {
   "homepage": "https://eijigorilla.github.io/n2_compile",
   "name": "n2_compile",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": true,
   "dependencies": {
     "@amcharts/amcharts5": "^5.7.1",
-    "@arcgis/core": "^4.28.10",
+    "@arcgis/core": "^4.29.10",
     "@esri/calcite-components-react": "^1.11.0",
     "@loadable/component": "^5.16.2",
     "@testing-library/jest-dom": "^5.17.0",
