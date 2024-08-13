@@ -312,6 +312,26 @@ const colorLotReqs = {
   6: [0, 0, 0, 0],
 };
 
+export const lotStatusArray = [
+  'Paid',
+  'For Payment Processing',
+  'For Legal Pass',
+  'For Offer to Buy',
+  'For Notice of Taking',
+  'With PTE',
+  'For Expropriation',
+];
+
+export const statusLotColor = [
+  '#00734d',
+  '#0070ff',
+  '#ffff00',
+  '#ffaa00',
+  '#FF5733',
+  '#70AD47',
+  '#FF0000',
+];
+
 let lotDefaultSymbol = new SimpleFillSymbol({
   color: [0, 0, 0, 0],
   style: 'solid',
@@ -322,71 +342,23 @@ let lotDefaultSymbol = new SimpleFillSymbol({
   },
 });
 
+const uniqueValueInfos_lotStatus = lotStatusArray.map((status: any, index: any) => {
+  return Object.assign({
+    value: index + 1,
+    label: status,
+    symbol: new SimpleFillSymbol({
+      color: statusLotColor[index],
+    }),
+  });
+});
+
 let lotLayerRenderer = new UniqueValueRenderer({
   field: 'StatusLA',
   defaultSymbol: lotDefaultSymbol, // autocasts as new SimpleFillSymbol()
-  uniqueValueInfos: [
-    {
-      // All features with value of "North" will be blue
-      value: 0,
-      label: 'Handed-Over',
-      symbol: new SimpleFillSymbol({
-        color: colorLotReqs[0],
-      }),
-    },
-    {
-      // All features with value of "North" will be blue
-      value: 1,
-      label: 'Paid',
-      symbol: new SimpleFillSymbol({
-        color: colorLotReqs[1],
-      }),
-    },
-    {
-      // All features with value of "North" will be blue
-      value: 2,
-      label: 'For Payment Processing',
-      symbol: new SimpleFillSymbol({
-        color: colorLotReqs[2],
-      }),
-    },
-    {
-      // All features with value of "North" will be blue
-      value: 3,
-      label: 'For Legal Pass',
-      symbol: new SimpleFillSymbol({
-        color: colorLotReqs[3],
-      }),
-    },
-    {
-      // All features with value of "North" will be blue
-      value: 4,
-      label: 'For Appraisal/Offer to Buy',
-      symbol: new SimpleFillSymbol({
-        color: colorLotReqs[4],
-      }),
-    },
-    {
-      // All features with value of "North" will be blue
-      value: 5,
-      label: 'For Expro',
-      symbol: new SimpleFillSymbol({
-        color: colorLotReqs[5],
-      }),
-    },
-  ],
+  uniqueValueInfos: uniqueValueInfos_lotStatus,
 });
 
 // Custom popup for lot layer
-const lotStatusArray = [
-  'Handed-Over',
-  'Paid',
-  'For Payment Processing',
-  'For Legal Pass',
-  'For Appraisal/Offer to Buy',
-  'For Expro',
-];
-
 const landUseArray = [
   'Agricultural',
   'Agricultural & Commercial',
@@ -436,7 +408,7 @@ let customContentLot = new CustomContent({
     return `<ul><li>Handed-Over Area: <b>${handOverArea} %</b></li><br>
     <li>Hand-Over Date: <b>${date}</b></li><br>
               <li>Status:           <b>${
-                statusLot >= 0 ? lotStatusArray[statusLot] : ''
+                statusLot >= 0 ? lotStatusArray[statusLot - 1] : ''
               }</b></li><br>
               <li>Land Use:         <b>${landUse >= 1 ? landUseArray[landUse - 1] : ''}</b></li><br>
               <li>Municipality:     <b>${municipal}</b></li><br>

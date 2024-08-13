@@ -238,11 +238,6 @@ calcite-tabs {
 }
 
 /* Header */
-#headerDiv {
-  display: flex;
-  width: 100%;
-  padding: 0.4rem;
-}
 
 .headerTitle {
   color: white;
@@ -253,9 +248,7 @@ calcite-tabs {
 }
 
 calcite-segmented-control {
-  margin-left: 45%;
-  margin-top: 0.3rem;
-  margin-bottom: 0.3rem;
+  margin: auto;
 }
 
 .date {

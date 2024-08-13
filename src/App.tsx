@@ -192,17 +192,24 @@ function App() {
             </CalciteTab>
           </div>
         </CalciteTabs>
-        <header slot="header" id="headerDiv">
+        <header
+          slot="header"
+          id="headerDiv"
+          style={{ display: 'flex', width: '100%', height: '55px', padding: '0.4rem' }}
+        >
           <img
             src="https://EijiGorilla.github.io/Symbols/Projec_Logo/DOTr_Logo_v2.png"
             alt="DOTr Logo"
-            height={'2.9%'}
-            width={'2.9%'}
+            height={'55px'}
+            width={'55px'}
             style={{ marginBottom: 'auto', marginTop: 'auto' }}
           />
-          <b className="headerTitle">N2 COMPILED</b>
+          <b className="headerTitle" style={{ width: '250px' }}>
+            N2 OVERALL PROGRESS
+          </b>
           <div className="date">{!asOfDate ? '' : 'As of ' + asOfDate}</div>
           <CalciteSegmentedControl
+            scale="m"
             onCalciteSegmentedControlChange={(event: any) =>
               setCpValueSelected(event.target.selectedItem.id)
             }
@@ -224,13 +231,13 @@ function App() {
           <img
             src="https://EijiGorilla.github.io/Symbols/Projec_Logo/GCR LOGO.png"
             alt="GCR Logo"
-            height={'4.4%'}
-            width={'4.4%'}
+            height={'50px'}
+            width={'75px'}
             style={{
               marginBottom: 'auto',
               marginTop: 'auto',
-              marginLeft: 'auto',
-              marginRight: '5rem',
+              marginLeft: '0.5rem',
+              marginRight: '2rem',
             }}
           />
         </header>

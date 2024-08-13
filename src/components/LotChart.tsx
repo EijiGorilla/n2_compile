@@ -522,7 +522,6 @@ const LotChart = (props: any) => {
           height: '45vh',
           backgroundColor: 'rgb(0,0,0,0)',
           color: 'white',
-          marginBottom: '-1.5vh',
         }}
       ></div>
       <div className="pteNumberImage">
@@ -550,7 +549,7 @@ const LotChart = (props: any) => {
       <div
         id={chartID_moa}
         style={{
-          height: '22vh',
+          height: '21vh',
           backgroundColor: 'rgb(0,0,0,0)',
           color: 'white',
         }}

@@ -3,7 +3,9 @@ import {
   colorsCutting,
   dateTable,
   lotLayer,
+  lotStatusArray,
   nloLayer,
+  statusLotColor,
   structureLayer,
   treeCompensationLayer,
   treeCuttingLayer,
@@ -51,123 +53,53 @@ export async function dateUpdate() {
 }
 
 // For Lot Pie Chart
-export const statusLot: string[] = [
-  'Paid',
-  'For Payment Processing',
-  'For Legal Pass',
-  'For Appraisal/Offer to Buy',
-  'For Expro',
-];
-
-export const statusLotChart = [
-  {
-    category: statusLot[0],
-    value: 1,
-  },
-  {
-    category: statusLot[1],
-    value: 2,
-  },
-  {
-    category: statusLot[2],
-    value: 3,
-  },
-  {
-    category: statusLot[3],
-    value: 4,
-  },
-  {
-    category: statusLot[4],
-    value: 5,
-  },
-];
+export const lotStatusField = 'StatusLA';
+export const statusLotChart = lotStatusArray.map((status: any, index: any) => {
+  return Object.assign({
+    category: status,
+    value: index + 1,
+  });
+});
 
 export async function generateLotData() {
-  var total_paid_lot = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN StatusLA = 1 THEN 1 ELSE 0 END',
-    outStatisticFieldName: 'total_paid_lot',
-    statisticType: 'sum',
-  });
-
-  var total_payp_lot = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN StatusLA = 2 THEN 1 ELSE 0 END',
-    outStatisticFieldName: 'total_payp_lot',
-    statisticType: 'sum',
-  });
-
-  var total_legalpass_lot = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN StatusLA = 3 THEN 1 ELSE 0 END',
-    outStatisticFieldName: 'total_legalpass_lot',
-    statisticType: 'sum',
-  });
-
-  var total_otb_lot = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN StatusLA = 4 THEN 1 ELSE 0 END',
-    outStatisticFieldName: 'total_otb_lot',
-    statisticType: 'sum',
-  });
-
-  var total_expro_lot = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN StatusLA = 5 THEN 1 ELSE 0 END',
-    outStatisticFieldName: 'total_expro_lot',
-    statisticType: 'sum',
+  var total_count = new StatisticDefinition({
+    onStatisticField: lotStatusField,
+    outStatisticFieldName: 'total_count',
+    statisticType: 'count',
   });
 
   var query = lotLayer.createQuery();
-  query.outStatistics = [
-    total_paid_lot,
-    total_payp_lot,
-    total_legalpass_lot,
-    total_otb_lot,
-    total_expro_lot,
-  ];
-  query.returnGeometry = true;
+  query.outFields = [lotStatusField];
+  query.outStatistics = [total_count];
+  query.orderByFields = [lotStatusField];
+  query.groupByFieldsForStatistics = [lotStatusField];
 
   return lotLayer.queryFeatures(query).then((response: any) => {
-    var stats = response.features[0].attributes;
-    const paid = stats.total_paid_lot;
-    const payp = stats.total_payp_lot;
-    const legalpass = stats.total_legalpass_lot;
-    const otb = stats.total_otb_lot;
-    const expro = stats.total_expro_lot;
+    var stats = response.features;
+    const data = stats.map((result: any, index: any) => {
+      const attributes = result.attributes;
+      const status = attributes.StatusLA;
+      const count = attributes.total_count;
+      return Object.assign({
+        category: lotStatusArray[status - 1],
+        value: count,
+      });
+    });
 
-    const compile = [
-      {
-        category: statusLot[0],
-        value: paid,
+    const compile: any = [];
+    lotStatusArray.map((status: any, index: any) => {
+      const find = data.find((emp: any) => emp.category === status);
+      const value = find === undefined ? 0 : find?.value;
+      const object = {
+        category: status,
+        value: value,
         sliceSettings: {
-          fill: am5.color('#70ad47'),
+          fill: am5.color(statusLotColor[index]),
         },
-      },
-      {
-        category: statusLot[1],
-        value: payp,
-        sliceSettings: {
-          fill: am5.color('#0070ff'),
-        },
-      },
-      {
-        category: statusLot[2],
-        value: legalpass,
-        sliceSettings: {
-          fill: am5.color('#ffff00'),
-        },
-      },
-      {
-        category: statusLot[3],
-        value: otb,
-        sliceSettings: {
-          fill: am5.color('#ffaa00'),
-        },
-      },
-      {
-        category: statusLot[4],
-        value: expro,
-        sliceSettings: {
-          fill: am5.color('#ff0000'),
-        },
-      },
-    ];
+      };
+      compile.push(object);
+    });
+
     return compile;
   });
 }
