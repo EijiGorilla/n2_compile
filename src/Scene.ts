@@ -31,6 +31,7 @@ import {
   utilityLineLayer,
   utilityLineLayer1,
   viaductLayer,
+  buildingLayer,
 } from './layers';
 import { highlightLot } from './Query';
 
@@ -76,6 +77,7 @@ const utilityGroupLayer = new GroupLayer({
 });
 
 // Change the layer order by using index numbers in map.add
+map.add(buildingLayer);
 map.add(viaductLayer);
 map.add(pierAccessLayer);
 map.add(utilityGroupLayer);
@@ -137,7 +139,9 @@ export const layerList = new LayerList({
     item.title === 'Point (status)' ||
     item.title === 'Line (symbol)' ||
     item.title === 'Line (status)' ||
-    item.title === 'Viaduct'
+    item.title === 'Pier Head/Column' ||
+    item.title === 'Viaduct' ||
+    item.title === 'Station Structures'
       ? (item.visible = false)
       : (item.visible = true);
   },

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { lotLayer } from '../layers';
+import { exteriorShellLayer, lotLayer } from '../layers';
 import { view } from '../Scene';
 import FeatureFilter from '@arcgis/core/layers/support/FeatureFilter';
 import Query from '@arcgis/core/rest/support/Query';
@@ -93,7 +93,6 @@ const LotChart = (props: any) => {
   // 1. Pie Chart for Land Acquisition
   useEffect(() => {
     // Dispose previously created root element
-
     maybeDisposeRoot(chartID);
 
     var root = am5.Root.new(chartID);

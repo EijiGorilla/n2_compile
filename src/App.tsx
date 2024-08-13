@@ -41,6 +41,16 @@ import loadable from '@loadable/component';
 import LotProgressChart from './components/lotProgressChart';
 import ViaductProgressChart from './components/ViaductProgressChart';
 import { dateUpdate } from './Query';
+import {
+  buildingLayer,
+  columnsLayer,
+  floorsLayer,
+  stColumnLayer,
+  stFoundationLayer,
+  stFramingLayer,
+  wallsLayer,
+} from './layers';
+import { any } from '@amcharts/amcharts5/.internal/core/util/Array';
 
 function App() {
   const [asOfDate, setAsOfDate] = useState<undefined | any | unknown>(null);
@@ -67,11 +77,52 @@ function App() {
   // Measurement tools
   const [activeAnalysis, setActiveAnalysis] = useState<any | undefined>('');
 
+  // load building layer
+  const [buildingLayerLoaded, setBuildingLayerLoaded] = useState<any>();
+
   const StructureChart = loadable(() => import('./components/StructureChart'));
   const NloChart = loadable(() => import('./components/NloChart'));
   const TreeChart = loadable(() => import('./components/TreeChart'));
   const UtilityChart = loadable(() => import('./components/UtilityChart'));
   const ViaductChart = loadable(() => import('./components/ViaductChart'));
+
+  // Control visibility of station structure
+  // when cp is 'All', station structures become invisible
+  async function layerOn() {
+    let queryExpression: any;
+    queryExpression =
+      cpValueSelected === 'N-01'
+        ? 'Station IN (7, 8)'
+        : cpValueSelected === 'N-02'
+          ? 'Station = 6'
+          : cpValueSelected === 'N-03'
+            ? 'Station IN (4, 5)'
+            : cpValueSelected === 'N-04'
+              ? 'Station = 3'
+              : '1=1';
+
+    columnsLayer.definitionExpression = queryExpression;
+    floorsLayer.definitionExpression = queryExpression;
+    wallsLayer.definitionExpression = queryExpression;
+    stFoundationLayer.definitionExpression = queryExpression;
+    stColumnLayer.definitionExpression = queryExpression;
+    stFramingLayer.definitionExpression = queryExpression;
+    columnsLayer.visible = true;
+    floorsLayer.visible = true;
+    wallsLayer.visible = true;
+    stFoundationLayer.visible = true;
+    stColumnLayer.visible = true;
+    stFramingLayer.visible = true;
+  }
+
+  useEffect(() => {
+    if (cpValueSelected === 'All') {
+      buildingLayer.visible = false;
+    } else {
+      buildingLayer.visible = true;
+      layerOn();
+    }
+  }, [cpValueSelected]);
 
   useEffect(() => {
     if (activeWidget) {
@@ -100,6 +151,12 @@ function App() {
     }
     view.ui.add(measurement, 'top-right');
   }, [activeAnalysis]);
+
+  useEffect(() => {
+    buildingLayer.load().then(() => {
+      setBuildingLayerLoaded(buildingLayer.loadStatus);
+    });
+  });
 
   useEffect(() => {
     map.ground.opacity = underground === true ? 0.7 : 1;
