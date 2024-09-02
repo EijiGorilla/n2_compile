@@ -1537,6 +1537,7 @@ const treeCuttingRenderer = new UniqueValueRenderer({
         { value: 4, color: '#FF0000' },
       ],
       legendOptions: {
+        title: '',
         showLegend: false,
       },
     }),
@@ -1631,14 +1632,15 @@ const treeCompensationRenderer = new UniqueValueRenderer({
     new ColorVariable({
       valueExpression: '$feature.Compensation',
       valueExpressionTitle: 'Status Color',
+      legendOptions: {
+        title: '',
+        showLegend: false,
+      },
       stops: [
         { value: 1, color: '#0070FF' },
         { value: 2, color: '#FFFF00' },
         { value: 3, color: '#71AB48' },
       ],
-      legendOptions: {
-        showLegend: false,
-      },
     }),
   ],
 });

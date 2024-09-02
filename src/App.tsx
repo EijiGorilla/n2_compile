@@ -13,6 +13,7 @@ import '@esri/calcite-components/dist/components/calcite-action';
 import '@esri/calcite-components/dist/components/calcite-action-bar';
 import '@esri/calcite-components/dist/components/calcite-tabs';
 import '@esri/calcite-components/dist/components/calcite-tab';
+import '@esri/calcite-components/dist/components/calcite-tab-nav';
 import '@esri/calcite-components/dist/components/calcite-tab-title';
 import '@esri/calcite-components/dist/components/calcite-switch';
 import '@esri/calcite-components/dist/components/calcite-button';
@@ -372,14 +373,7 @@ function App() {
             style={{ width: '18vw' }}
             hidden
           >
-            <CalciteList>
-              <CalciteListItem
-                label=""
-                description=""
-                value="land-acquisition"
-                ref={layerListDiv}
-              ></CalciteListItem>
-            </CalciteList>
+            <div id="layers-container" ref={layerListDiv}></div>
           </CalcitePanel>
 
           <CalcitePanel
@@ -389,14 +383,7 @@ function App() {
             style={{ width: '18vw' }}
             hidden
           >
-            <CalciteList>
-              <CalciteListItem
-                label=""
-                description=""
-                value="basemaps"
-                ref={calcitePanelBasemaps}
-              ></CalciteListItem>
-            </CalciteList>
+            <div id="basemap-container" ref={calcitePanelBasemaps}></div>
           </CalcitePanel>
 
           <CalcitePanel

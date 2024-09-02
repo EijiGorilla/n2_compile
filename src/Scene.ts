@@ -206,7 +206,7 @@ const searchWidget = new Search({
 export const searchExpand = new Expand({
   view: view,
   content: searchWidget,
-  expandIconClass: 'esri-icon-search',
+  expandIcon: 'chevrons-right',
   group: 'top-right',
 });
 
