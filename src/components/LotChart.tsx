@@ -516,7 +516,14 @@ const LotChart = (props: any) => {
 
   return (
     <>
-      <div style={{ color: primaryLabelColor, fontSize: '1.2rem', marginLeft: '13px' }}>
+      <div
+        style={{
+          color: primaryLabelColor,
+          fontSize: '1.2rem',
+          marginLeft: '13px',
+          marginTop: '10px',
+        }}
+      >
         TOTAL LOTS
       </div>
       <CalciteLabel layout="inline">
