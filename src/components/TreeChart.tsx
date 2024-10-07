@@ -16,6 +16,9 @@ import {
   generateTreeCompensationData,
 } from '../Query';
 import '../App.css';
+import { primaryLabelColor, valueLabelColor } from '../StatusUniqueValues';
+import '@esri/calcite-components/dist/components/calcite-label';
+import { CalciteLabel } from '@esri/calcite-components-react';
 
 // Dispose function
 function maybeDisposeRoot(divId: any) {
@@ -100,9 +103,7 @@ const TreeChart = (props: any) => {
     // Create chart
     var chart = root.container.children.push(
       am5percent.PieChart.new(root, {
-        //centerY: am5.percent(-2), //-10
-        y: am5.percent(-25), // space between pie chart and total lots
-        layout: root.horizontalLayout,
+        layout: root.verticalLayout,
       }),
     );
 
@@ -130,12 +131,29 @@ const TreeChart = (props: any) => {
         //legendLabelText: "[{fill}]{category}[/]",
         legendValueText: "{valuePercentTotal.formatNumber('#.')}% ({value})",
         radius: am5.percent(45), // outer radius
-        innerRadius: am5.percent(20),
-        marginBottom: -10,
+        innerRadius: am5.percent(28),
+        scale: 1.8,
       }),
     );
     pieSeriesRef.current = pieSeries;
     chart.series.push(pieSeries);
+
+    // values inside a donut
+    let inner_label = pieSeries.children.push(
+      am5.Label.new(root, {
+        text: '[#ffffff]{valueSum}[/]\n[fontSize: 5px; #d3d3d3; verticalAlign: super]TREES[/]',
+        fontSize: '1rem',
+        centerX: am5.percent(50),
+        centerY: am5.percent(40),
+        populateText: true,
+        oversizedBehavior: 'fit',
+        textAlign: 'center',
+      }),
+    );
+
+    pieSeries.onPrivate('width', (width: any) => {
+      inner_label.set('maxWidth', width * 0.7);
+    });
 
     // Set slice opacity and stroke color
     pieSeries.slices.template.setAll({
@@ -218,12 +236,10 @@ const TreeChart = (props: any) => {
 
     // Legend
     // https://www.amcharts.com/docs/v5/charts/percent-charts/legend-percent-series/
-    var legend = root.container.children.push(
+    var legend = chart.children.push(
       am5.Legend.new(root, {
         centerX: am5.percent(50),
         x: am5.percent(50),
-        y: legendY,
-        layout: root.verticalLayout,
       }),
     );
     legendRef.current = legend;
@@ -306,9 +322,7 @@ const TreeChart = (props: any) => {
     // Create chart
     var chart = root.container.children.push(
       am5percent.PieChart.new(root, {
-        //centerY: am5.percent(-2), //-10
-        y: am5.percent(-25), // space between pie chart and total lots
-        layout: root.horizontalLayout,
+        layout: root.verticalLayout,
       }),
     );
     chartRef_compen.current = chart;
@@ -322,12 +336,29 @@ const TreeChart = (props: any) => {
         //legendLabelText: "[{fill}]{category}[/]",
         legendValueText: "{valuePercentTotal.formatNumber('#.')}% ({value})",
         radius: am5.percent(45), // outer radius
-        innerRadius: am5.percent(20),
-        marginBottom: -10,
+        innerRadius: am5.percent(28),
+        scale: 1.8,
       }),
     );
     pieSeriesRef_compen.current = pieSeries;
     chart.series.push(pieSeries);
+
+    // values inside a donut
+    let inner_label = pieSeries.children.push(
+      am5.Label.new(root, {
+        text: '[#ffffff]{valueSum}[/]\n[fontSize: 5px; #d3d3d3; verticalAlign: super]TREES[/]',
+        fontSize: '1rem',
+        centerX: am5.percent(50),
+        centerY: am5.percent(40),
+        populateText: true,
+        oversizedBehavior: 'fit',
+        textAlign: 'center',
+      }),
+    );
+
+    pieSeries.onPrivate('width', (width: any) => {
+      inner_label.set('maxWidth', width * 0.7);
+    });
 
     // Set slice opacity and stroke color
     pieSeries.slices.template.setAll({
@@ -412,12 +443,10 @@ const TreeChart = (props: any) => {
 
     // Legend
     // https://www.amcharts.com/docs/v5/charts/percent-charts/legend-percent-series/
-    var legend = root.container.children.push(
+    var legend = chart.children.push(
       am5.Legend.new(root, {
         centerX: am5.percent(50),
         x: am5.percent(50),
-        y: legendY,
-        layout: root.verticalLayout,
       }),
     );
     legendRef_compen.current = legend;
@@ -491,37 +520,54 @@ const TreeChart = (props: any) => {
 
   return (
     <>
-      <div className="treesNumberImage">
-        <div>
-          <div className="totalTreesLabel">TOTAL TREES</div>
-          <br />
-          <br />
-          <b className="totalTreesNumber">{thousands_separators(treesNumber[0])} </b>
-        </div>
-        <img
-          src="https://EijiGorilla.github.io/Symbols/Tree_Logo.svg"
-          alt="Land Logo"
-          height={'20%'}
-          width={'20%'}
-          style={{ padding: '10px', margin: 'auto', marginRight: '40px' }}
-        />
+      <div
+        style={{
+          color: primaryLabelColor,
+          fontSize: '1.2rem',
+          marginLeft: '13px',
+          marginTop: '10px',
+        }}
+      >
+        TOTAL TREES
       </div>
+      <CalciteLabel layout="inline">
+        <b className="totalLotsNumber" style={{ color: valueLabelColor }}>
+          <div
+            style={{
+              color: valueLabelColor,
+              fontSize: '2rem',
+              fontWeight: 'bold',
+              fontFamily: 'calibri',
+              lineHeight: '1.2',
+              marginLeft: '15px',
+            }}
+          >
+            {thousands_separators(treesNumber[0])}
+          </div>
+          <img
+            src="https://EijiGorilla.github.io/Symbols/Tree_Logo.svg"
+            alt="Land Logo"
+            height={'55px'}
+            width={'55px'}
+            style={{ marginLeft: '250%', display: 'flex', marginTop: '-50%' }}
+          />
+        </b>
+      </CalciteLabel>
+
       <div
         id={chartID_cuting}
         style={{
-          height: '45vh',
+          height: '35vh',
           backgroundColor: 'rgb(0,0,0,0)',
           color: 'white',
-          marginBottom: '-7vh',
         }}
       ></div>
       <div
         id={chartID_compen}
         style={{
-          height: '45vh',
+          height: '35vh',
           backgroundColor: 'rgb(0,0,0,0)',
           color: 'white',
-          marginBottom: '-1.5vh',
         }}
       ></div>
     </>
