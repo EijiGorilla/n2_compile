@@ -352,7 +352,7 @@ const ViaductChart = (props: any) => {
             alt="Land Logo"
             height={'50px'}
             width={'50px'}
-            style={{ marginLeft: '220%', display: 'flex', marginTop: '-60%' }}
+            style={{ marginLeft: '260px', display: 'flex', marginTop: '-70px' }}
           />
         </b>
       </CalciteLabel>

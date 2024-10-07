@@ -522,9 +522,9 @@ const StructureChart = memo((props: any) => {
           <img
             src="https://EijiGorilla.github.io/Symbols/House_Logo.svg"
             alt="Land Logo"
-            height={'35%'}
-            width={'35%'}
-            style={{ marginLeft: '170%', display: 'flex', marginTop: '-35%' }}
+            height={'50px'}
+            width={'50px'}
+            style={{ marginLeft: '260px', display: 'flex', marginTop: '-50px' }}
           />
         </b>
       </CalciteLabel>

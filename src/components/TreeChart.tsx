@@ -549,7 +549,7 @@ const TreeChart = (props: any) => {
             alt="Land Logo"
             height={'55px'}
             width={'55px'}
-            style={{ marginLeft: '250%', display: 'flex', marginTop: '-50%' }}
+            style={{ marginLeft: '260px', display: 'flex', marginTop: '-50px' }}
           />
         </b>
       </CalciteLabel>

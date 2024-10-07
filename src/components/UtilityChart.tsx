@@ -699,12 +699,14 @@ const UtilityChart = (props: any) => {
             alt="Land Logo"
             height={'75px'}
             width={'75px'}
-            style={{ marginLeft: '260%', display: 'flex', marginTop: '-60%' }}
+            style={{ marginLeft: '260px', display: 'flex', marginTop: '-90px' }}
           />
         </b>
       </CalciteLabel>
 
-      <div id="utilityPointChartTitle">POINT FEATURE</div>
+      <div id="utilityPointChartTitle" style={{ marginTop: '10px' }}>
+        POINT FEATURE
+      </div>
       <div
         id={chartID}
         style={{

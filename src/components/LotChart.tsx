@@ -543,9 +543,9 @@ const LotChart = (props: any) => {
           <img
             src="https://EijiGorilla.github.io/Symbols/Land_logo.png"
             alt="Land Logo"
-            height={'20%'}
-            width={'20%'}
-            style={{ marginLeft: '120%', display: 'flex', marginTop: '-17%' }}
+            height={'50px'}
+            width={'50px'}
+            style={{ marginLeft: '260px', display: 'flex', marginTop: '-50px' }}
           />
         </b>
       </CalciteLabel>
@@ -579,9 +579,9 @@ const LotChart = (props: any) => {
             <img
               src="https://EijiGorilla.github.io/Symbols/Land_Acquisition/Handed_Over.svg"
               alt="Land Logo"
-              height={'14%'}
-              width={'14%'}
-              style={{ marginLeft: '90%', display: 'flex', marginTop: '-10%' }}
+              height={'50px'}
+              width={'50px'}
+              style={{ marginLeft: '260px', display: 'flex', marginTop: '-70px' }}
             />
           </b>
         ) : (
@@ -603,9 +603,9 @@ const LotChart = (props: any) => {
             <img
               src="https://EijiGorilla.github.io/Symbols/Land_Acquisition/Handed_Over.svg"
               alt="Land Logo"
-              height={'14%'}
-              width={'14%'}
-              style={{ marginLeft: '80%', display: 'flex', marginTop: '-18%' }}
+              height={'50px'}
+              width={'50px'}
+              style={{ marginLeft: '260px', display: 'flex', marginTop: '-70px' }}
             />
           </b>
         )}

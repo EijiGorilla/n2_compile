@@ -307,7 +307,7 @@ const NloChart = memo((props: any) => {
             alt="Land Logo"
             height={'50px'}
             width={'50px'}
-            style={{ marginLeft: '300%', display: 'flex', marginTop: '-40%' }}
+            style={{ marginLeft: '260px', display: 'flex', marginTop: '-50px' }}
           />
         </b>
       </CalciteLabel>
