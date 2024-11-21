@@ -111,7 +111,7 @@ const NloChart = memo((props: any) => {
     // values inside a donut
     let inner_label = pieSeries.children.push(
       am5.Label.new(root, {
-        text: '[#ffffff]{valueSum}[/]\n[fontSize: 5px; #d3d3d3; verticalAlign: super]NLOs[/]',
+        text: '[#ffffff]{valueSum}[/]\n[fontSize: 0.5em; #d3d3d3; verticalAlign: super]NLOs[/]',
         fontSize: '1rem',
         centerX: am5.percent(50),
         centerY: am5.percent(40),
@@ -129,7 +129,7 @@ const NloChart = memo((props: any) => {
     pieSeries.slices.template.setAll({
       fillOpacity: 0.9,
       stroke: am5.color('#ffffff'),
-      strokeWidth: 1,
+      strokeWidth: 0.5,
       strokeOpacity: 1,
       templateField: 'sliceSettings',
     });

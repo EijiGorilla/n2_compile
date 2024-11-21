@@ -113,6 +113,10 @@ calcite-tabs {
   display: none;
 }
 
+.esri-legend {
+  background-color: #2b2b2b;
+}
+
 .calcite-tutorial {
   --calcite-color-brand: #039851;
   --calcite-color-brand-hover: #008d52;

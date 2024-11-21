@@ -310,7 +310,7 @@ const ViaductChart = (props: any) => {
     }
     makeSeries('Complete', 'comp');
     makeSeries('Incomplete', 'incomp');
-    makeSeries('Delayed', 'delay');
+    // makeSeries('Delayed', 'delay');
     chart.appear(1000, 100);
 
     return () => {
