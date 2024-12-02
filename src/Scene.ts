@@ -59,7 +59,7 @@ const lotGroupLayer = new GroupLayer({
   title: 'Land',
   visible: true,
   visibilityMode: 'independent',
-  layers: [endorsedLotLayer, lotLayer, handedOverLotLayer, superUrgentLotLayer, pnrLayer],
+  layers: [endorsedLotLayer, lotLayer, pnrLayer],
 });
 
 const treeGroupLayer = new GroupLayer({
@@ -87,6 +87,7 @@ map.add(structureLayer);
 map.add(nloLoOccupancyGroupLayer);
 map.add(alignmentGroupLayer);
 map.add(prowLayer);
+map.add(handedOverLotLayer);
 
 export const view = new SceneView({
   container: undefined,

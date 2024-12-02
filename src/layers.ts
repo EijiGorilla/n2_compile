@@ -27,7 +27,7 @@ import SizeVariable from '@arcgis/core/renderers/visualVariables/SizeVariable';
 import RotationVariable from '@arcgis/core/renderers/visualVariables/RotationVariable';
 import { labelSymbol3DLine } from './Label';
 import ColorVariable from '@arcgis/core/renderers/visualVariables/ColorVariable';
-import { valueLabelColor } from './StatusUniqueValues';
+import { handedOverLotField, valueLabelColor } from './StatusUniqueValues';
 
 /* Standalone table for Dates */
 export const dateTable = new FeatureLayer({
@@ -547,18 +547,18 @@ export const superUrgentLotLayer = new FeatureLayer({
 
 /* Handed-Over Lot (public + private) */
 const handedOverLotRenderer = new UniqueValueRenderer({
-  field: 'HandedOver',
+  field: handedOverLotField,
 
   uniqueValueInfos: [
     {
       value: 1,
       label: 'Handed-Over',
       symbol: new SimpleFillSymbol({
-        color: [255, 0, 0, 0],
-        outline: {
-          color: '#00c5ff',
-          width: 0.3,
-        },
+        color: [0, 255, 255, 0.3], //[0, 255, 255, 0.1], #00ffff
+        outline: new SimpleLineSymbol({
+          color: '#00ffff',
+          width: '4px',
+        }),
       }),
     },
   ],
@@ -572,7 +572,7 @@ export const handedOverLotLayer = new FeatureLayer({
     },
   },
   layerId: 4,
-  definitionExpression: 'HandedOver = 1',
+  definitionExpression: `${handedOverLotField} = 1`,
   renderer: handedOverLotRenderer,
   popupEnabled: false,
   title: 'Handed-Over (public + private)',
@@ -580,6 +580,7 @@ export const handedOverLotLayer = new FeatureLayer({
     mode: 'on-the-ground',
   },
 });
+handedOverLotLayer.listMode = 'hide';
 
 /* Structure Layer */
 const height = 5;

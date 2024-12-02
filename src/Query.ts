@@ -2,6 +2,7 @@ import {
   colorsCompen,
   colorsCutting,
   dateTable,
+  handedOverLotLayer,
   lotLayer,
   lotStatusArray,
   nloLayer,
@@ -17,7 +18,13 @@ import StatisticDefinition from '@arcgis/core/rest/support/StatisticDefinition';
 import * as am5 from '@amcharts/amcharts5';
 import { view } from './Scene';
 import Query from '@arcgis/core/rest/support/Query';
-import { handedOverLotField } from './StatusUniqueValues';
+import {
+  cpField,
+  handedOverLotField,
+  lotIdField,
+  querySuperUrgent,
+  superurgent_items,
+} from './StatusUniqueValues';
 
 // Updat date
 export async function dateUpdate() {
@@ -131,9 +138,12 @@ export async function generateLotNumber() {
 }
 
 // Handed Over
-export async function generateHandedOverLotsNumber(contractcp: any) {
-  const queryCP = "CP = '" + contractcp + "'";
-  const statusQuery = 'LotID IS NOT NULL';
+export async function generateHandedOverLotsNumber(superurgent: any, contractcp: any) {
+  const queryDefault = '1=1';
+  const queryContractp = `${cpField} = '` + contractcp + "'";
+  const querySuperUrgentCp = querySuperUrgent + ' AND ' + queryContractp;
+  const lotIdNotNull = `${lotIdField} IS NOT NULL`;
+
   const onStatisticsFieldValue: string =
     'CASE WHEN ' + handedOverLotField + ' = 1 THEN 1 ELSE 0 END';
 
@@ -144,18 +154,33 @@ export async function generateHandedOverLotsNumber(contractcp: any) {
   });
 
   var total_lot_N = new StatisticDefinition({
-    onStatisticField: 'LotID',
+    onStatisticField: lotIdField,
     outStatisticFieldName: 'total_lot_N',
     statisticType: 'count',
   });
 
   var query = lotLayer.createQuery();
 
-  if (!contractcp || contractcp === 'All') {
-    query.where = statusQuery;
-  } else if (contractcp) {
-    query.where = statusQuery + ' AND ' + queryCP;
+  if (superurgent === superurgent_items[0]) {
+    if (contractcp === 'All') {
+      query.where = lotIdNotNull;
+    } else {
+      query.where = lotIdNotNull + ' AND ' + queryContractp;
+    }
+  } else if (superurgent === superurgent_items[1]) {
+    // ON
+    if (contractcp === 'All') {
+      query.where = lotIdNotNull + ' AND ' + querySuperUrgent;
+    } else {
+      query.where = lotIdNotNull + ' AND ' + querySuperUrgentCp;
+    }
   }
+
+  // if (!contractcp || contractcp === 'All') {
+  //   query.where = statusQuery;
+  // } else if (contractcp) {
+  //   query.where = statusQuery + ' AND ' + queryCP;
+  // }
 
   query.outStatistics = [total_handedover_lot, total_lot_N];
   // query.returnGeometry = true;
@@ -1612,8 +1637,8 @@ export function zoomToLayer(layer: any) {
   });
 }
 
+let highlight: any;
 export function highlightLot(layer: any) {
-  let highlight: any;
   view.whenLayerView(layer).then((urgentLayerView) => {
     var query = layer.createQuery();
     layer.queryFeatures(query).then((results: any) => {
@@ -1630,4 +1655,10 @@ export function highlightLot(layer: any) {
       highlight = urgentLayerView.highlight(objID);
     });
   });
+}
+
+export function highlightRemove(layer: any) {
+  if (highlight) {
+    highlight.remove();
+  }
 }

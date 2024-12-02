@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { exteriorShellLayer, lotLayer } from '../layers';
+import { exteriorShellLayer, handedOverLotLayer, lotLayer } from '../layers';
 import { view } from '../Scene';
 import FeatureFilter from '@arcgis/core/layers/support/FeatureFilter';
 import Query from '@arcgis/core/rest/support/Query';
@@ -13,17 +13,29 @@ import {
   generateLotData,
   generateLotMoaData,
   generateLotNumber,
+  highlightLot,
+  highlightRemove,
   statusLotChart,
   statusMoaLotChart,
   thousands_separators,
   zoomToLayer,
 } from '../Query';
 import '../App.css';
+import '@esri/calcite-components/dist/components/calcite-segmented-control';
+import '@esri/calcite-components/dist/components/calcite-segmented-control-item';
 import '@esri/calcite-components/dist/components/calcite-label';
-import { CalciteLabel } from '@esri/calcite-components-react';
+import '@esri/calcite-components/dist/components/calcite-checkbox';
 import {
+  CalciteLabel,
+  CalciteSegmentedControl,
+  CalciteSegmentedControlItem,
+  CalciteCheckbox,
+} from '@esri/calcite-components-react';
+import {
+  cpField,
   lotStatusField,
   primaryLabelColor,
+  querySuperUrgent,
   statusLotQuery,
   valueLabelColor,
 } from '../StatusUniqueValues';
@@ -66,15 +78,60 @@ const LotChart = (props: any) => {
   const [lotMoaData, setLotMoaData] = useState([]);
   const chartID_moa = 'land-moa';
 
-  // Query
-  const queryDefault = '1=1';
-  const queryContractp = "CP = '" + props.contractp + "'";
+  // Super urgent control items
+  const superurgent_items = ['OFF', 'ON'];
+  const [superUrgentSelected, setSuperUrgentSelected] = useState<any>(superurgent_items[0]);
 
-  if (props.contractp === 'All') {
-    lotLayer.definitionExpression = queryDefault;
-  } else {
-    lotLayer.definitionExpression = queryContractp;
+  // Handed Over View checkbox
+  const [handedOverCheckBox, setHandedOverCheckBox] = useState<boolean>(false);
+
+  // Query
+
+  const queryDefault = '1=1';
+  const queryContractp = `${cpField} = '` + props.contractp + "'";
+  const querySuperUrgentCp = querySuperUrgent + ' AND ' + queryContractp;
+
+  if (superUrgentSelected === superurgent_items[0]) {
+    if (props.contractp === 'All') {
+      lotLayer.definitionExpression = queryDefault;
+      handedOverLotLayer.definitionExpression = queryDefault;
+    } else {
+      lotLayer.definitionExpression = queryContractp;
+      handedOverLotLayer.definitionExpression = queryContractp;
+    }
+  } else if (superUrgentSelected === superurgent_items[1]) {
+    // ON
+    if (props.contractp === 'All') {
+      lotLayer.definitionExpression = querySuperUrgent;
+      handedOverLotLayer.definitionExpression = querySuperUrgent;
+    } else {
+      lotLayer.definitionExpression = querySuperUrgentCp;
+      handedOverLotLayer.definitionExpression = querySuperUrgentCp;
+    }
   }
+
+  // if (props.contractp === 'All') {
+  //   lotLayer.definitionExpression = queryDefault;
+  // } else {
+  //   lotLayer.definitionExpression = queryContractp;
+  // }
+
+  useEffect(() => {
+    if (superUrgentSelected === superurgent_items[1]) {
+      zoomToLayer(lotLayer);
+      highlightLot(lotLayer);
+    } else {
+      highlightRemove(lotLayer);
+    }
+  }, [superUrgentSelected]);
+
+  useEffect(() => {
+    if (handedOverCheckBox === true) {
+      handedOverLotLayer.visible = true;
+    } else {
+      handedOverLotLayer.visible = false;
+    }
+  }, [handedOverCheckBox]);
 
   useEffect(() => {
     generateLotData().then((result: any) => {
@@ -86,7 +143,7 @@ const LotChart = (props: any) => {
       setLotNumber(response);
     });
 
-    generateHandedOverLotsNumber(props.contractp).then((response: any) => {
+    generateHandedOverLotsNumber(superUrgentSelected, props.contractp).then((response: any) => {
       setHandedOverNumber(response);
     });
 
@@ -96,7 +153,7 @@ const LotChart = (props: any) => {
     });
 
     zoomToLayer(lotLayer);
-  }, [props.contractp]);
+  }, [superUrgentSelected, props.contractp]);
 
   // 1. Pie Chart for Land Acquisition
   useEffect(() => {
@@ -550,6 +607,44 @@ const LotChart = (props: any) => {
         </b>
       </CalciteLabel>
 
+      <div style={{ display: 'flex', marginTop: '10px' }}>
+        <div
+          style={{
+            marginLeft: '15px',
+            fontSize: '17px',
+            color: primaryLabelColor,
+            marginTop: 'auto',
+            marginBottom: 'auto',
+            marginRight: '10px',
+          }}
+        >
+          Super Urgent Lot:{' '}
+        </div>
+        <CalciteSegmentedControl
+          style={{
+            marginRight: 'auto',
+          }}
+          scale="m"
+          onCalciteSegmentedControlChange={(event: any) =>
+            setSuperUrgentSelected(event.target.selectedItem.id)
+          }
+        >
+          {superUrgentSelected &&
+            superurgent_items.map((priority: any, index: any) => {
+              return (
+                <CalciteSegmentedControlItem
+                  {...(superUrgentSelected === priority ? { checked: true } : {})}
+                  key={index}
+                  value={priority}
+                  id={priority}
+                >
+                  {priority}
+                </CalciteSegmentedControlItem>
+              );
+            })}
+        </CalciteSegmentedControl>
+      </div>
+
       {/* Lot Chart */}
       <div
         id={chartID}
@@ -563,16 +658,30 @@ const LotChart = (props: any) => {
       ></div>
 
       {/* Handed-Over */}
-      <div
-        style={{
-          color: primaryLabelColor,
-          fontSize: '1.2rem',
-          marginBottom: '13px',
-          marginLeft: '13px',
-        }}
-      >
-        HANDED-OVER
+      <div style={{ display: 'flex' }}>
+        <div
+          style={{
+            color: primaryLabelColor,
+            fontSize: '1.2rem',
+            marginLeft: '13px',
+            marginBottom: '13px',
+            marginRight: '10px',
+          }}
+        >
+          HANDED-OVER
+        </div>
+        <CalciteCheckbox
+          name="handover-checkbox"
+          label="VIEW"
+          style={{ width: '20px' }}
+          scale="l"
+          onCalciteCheckboxChange={(event: any) =>
+            setHandedOverCheckBox(handedOverCheckBox === false ? true : false)
+          }
+        ></CalciteCheckbox>
+        <div style={{ color: primaryLabelColor }}>View on the map</div>
       </div>
+
       <CalciteLabel layout="inline">
         {handedOverNumber[0] === 'Infinity' ? (
           <b className="permitToEnterNumber" style={{ color: valueLabelColor }}>
@@ -582,7 +691,7 @@ const LotChart = (props: any) => {
               alt="Land Logo"
               height={'50px'}
               width={'50px'}
-              style={{ marginLeft: '260px', display: 'flex', marginTop: '-70px' }}
+              style={{ marginLeft: '260px', display: 'flex', marginTop: '-60px' }}
             />
           </b>
         ) : (
@@ -606,7 +715,7 @@ const LotChart = (props: any) => {
               alt="Land Logo"
               height={'50px'}
               width={'50px'}
-              style={{ marginLeft: '260px', display: 'flex', marginTop: '-70px' }}
+              style={{ marginLeft: '260px', display: 'flex', marginTop: '-60px' }}
             />
           </b>
         )}

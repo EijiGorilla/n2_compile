@@ -1,5 +1,21 @@
 // Lot Status
+export const superUrgentField = 'Urgent';
+export const querySuperUrgent = `${superUrgentField} = 0`;
+export const superurgent_items = ['OFF', 'ON'];
+
 export const lotStatusField = 'StatusLA';
+export const lotIdField = 'LotID';
+export const percentHandedOverField = 'percentHandedOver';
+export const municipalityField = 'Municipality';
+export const barangayField = 'Barangay';
+export const landOwnerField = 'LandOwner';
+export const cpField = 'CP';
+export const landUseField = 'LandUse';
+export const endorsedField = 'Endorsed';
+export const handedOverLotField = 'HandedOver';
+export const lotHandedOverDateField = 'HandedOverDate';
+export const lotHandedOverAreaField = 'HandedOverArea';
+export const affectedAreaField = 'AffectedArea';
 export const statusLotLabel = [
   'Paid',
   'For Payment Processing',
@@ -32,6 +48,3 @@ export const statusLotQuery = statusLotLabel.map((status, index) => {
 // Chart and chart label color
 export const primaryLabelColor = '#9ca3af';
 export const valueLabelColor = '#d1d5db';
-
-// handedover
-export const handedOverLotField = 'HandedOver';
