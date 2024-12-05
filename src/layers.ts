@@ -27,7 +27,46 @@ import SizeVariable from '@arcgis/core/renderers/visualVariables/SizeVariable';
 import RotationVariable from '@arcgis/core/renderers/visualVariables/RotationVariable';
 import { labelSymbol3DLine } from './Label';
 import ColorVariable from '@arcgis/core/renderers/visualVariables/ColorVariable';
-import { handedOverLotField, valueLabelColor } from './StatusUniqueValues';
+import {
+  barangayField,
+  cpField,
+  endorsedField,
+  familyNumberField,
+  handedOverLotField,
+  landOwnerField,
+  landUseField,
+  lotHandedOverDateField,
+  lotStatusField,
+  municipalityField,
+  nloLoStatusField,
+  nloStatusField,
+  occupancyField,
+  occupancyNameField,
+  percentHandedOverField,
+  strucOwnerField,
+  structureStatusField,
+  superUrgentField,
+  treeCommonNameField,
+  treeStatusField,
+  treeMunicipalityField,
+  treeProvinceField,
+  treeScientificNameField,
+  valueLabelColor,
+  treeNoField,
+  treeCpField,
+  treeCompensationStatusField,
+  treeConservationField,
+  utilityType2Field,
+  utilityType2SymbolList,
+  utilityHeightField,
+  utilityIdField,
+  utilityTypeField,
+  utilityActionField,
+  utilityStatusField,
+  utilityCpField,
+  utilityRemarksField,
+  utilityCompanyField,
+} from './StatusUniqueValues';
 
 /* Standalone table for Dates */
 export const dateTable = new FeatureLayer({
@@ -166,8 +205,7 @@ prowLayer.listMode = 'hide';
 
 /* PNR */
 let pnrRenderer = new UniqueValueRenderer({
-  valueExpression:
-    "When($feature.LandOwner == 'BASES CONVERSION DEVELOPMENT AUTHORITY', 'BCDA', $feature.LandOwner == 'MANILA RAILROAD COMPANY' || $feature.LandOwner == 'Manila Railroad Company','PNR',$feature.LandOwner)",
+  valueExpression: `When($feature.${landOwnerField} == 'BASES CONVERSION DEVELOPMENT AUTHORITY', 'BCDA',$feature.${landOwnerField} == 'MANILA RAILROAD COMPANY' || $feature.${landOwnerField} == 'Manila Railroad Company','PNR', $feature.${landOwnerField})`,
   uniqueValueInfos: [
     {
       value: 'BCDA',
@@ -203,9 +241,7 @@ export const pnrLayer = new FeatureLayer({
   },
   layerId: 4,
   title: 'Land (PNR)',
-  definitionExpression:
-    "LandOwner IN ('BASES CONVERSION DEVELOPMENT AUTHORITY','MANILA RAILROAD COMPANY')",
-
+  definitionExpression: `${landOwnerField} IN ('BASES CONVERSION DEVELOPMENT AUTHORITY','MANILA RAILROAD COMPANY')`,
   elevationInfo: {
     mode: 'on-the-ground',
   },
@@ -220,17 +256,17 @@ export const pnrLayer = new FeatureLayer({
         type: 'fields',
         fieldInfos: [
           {
-            fieldName: 'HandOverDate',
+            fieldName: lotHandedOverDateField,
             label: 'Hand-Over Date',
           },
           {
-            fieldName: 'Municipality',
+            fieldName: municipalityField,
           },
           {
-            fieldName: 'Barangay',
+            fieldName: barangayField,
           },
           {
-            fieldName: 'LandOwner',
+            fieldName: landOwnerField,
             label: 'Land Owner',
           },
         ],
@@ -364,7 +400,7 @@ const uniqueValueInfos_lotStatus = lotStatusArray.map((status: any, index: any) 
 });
 
 let lotLayerRenderer = new UniqueValueRenderer({
-  field: 'StatusLA',
+  field: lotStatusField,
   defaultSymbol: lotDefaultSymbol, // autocasts as new SimpleFillSymbol()
   uniqueValueInfos: uniqueValueInfos_lotStatus,
 });
@@ -389,15 +425,15 @@ let customContentLot = new CustomContent({
   outFields: ['*'],
   creator: (event: any) => {
     // Extract AsscessDate of clicked pierAccessLayer
-    const handedOverDate = event.graphic.attributes.HandedOverDate;
-    const handOverArea = event.graphic.attributes.percentHandedOver;
-    const statusLot = event.graphic.attributes.StatusLA;
-    const landUse = event.graphic.attributes.LandUse;
-    const municipal = event.graphic.attributes.Municipality;
-    const barangay = event.graphic.attributes.Barangay;
-    const landOwner = event.graphic.attributes.LandOwner;
-    const cpNo = event.graphic.attributes.CP;
-    const endorse = event.graphic.attributes.Endorsed;
+    const handedOverDate = event.graphic.attributes[handedOverLotField];
+    const handOverArea = event.graphic.attributes[percentHandedOverField];
+    const statusLot = event.graphic.attributes[lotStatusField];
+    const landUse = event.graphic.attributes[landUseField];
+    const municipal = event.graphic.attributes[municipalityField];
+    const barangay = event.graphic.attributes[barangayField];
+    const landOwner = event.graphic.attributes[landOwnerField];
+    const cpNo = event.graphic.attributes[cpField];
+    const endorse = event.graphic.attributes[endorsedField];
     const endorsed = endorsedStatus[endorse];
 
     let daten: any;
@@ -460,7 +496,7 @@ export const lotLayer = new FeatureLayer({
 /* Endorsed Lot Layer */
 // Endorsed lot layer
 let endorsedLayerRenderer = new UniqueValueRenderer({
-  field: 'Endorsed',
+  field: endorsedField,
   defaultSymbol: lotDefaultSymbol,
   uniqueValueInfos: [
     {
@@ -510,7 +546,7 @@ endorsedLotLayer.popupTemplate = templateLot;
 
 /* Supre Urgent Lots */
 const superUrgentLotRenderer = new UniqueValueRenderer({
-  field: 'Urgent',
+  field: superUrgentField,
 
   uniqueValueInfos: [
     {
@@ -535,7 +571,7 @@ export const superUrgentLotLayer = new FeatureLayer({
     },
   },
   layerId: 4,
-  definitionExpression: 'Urgent = 0',
+  definitionExpression: `${superUrgentField} = 0`,
   renderer: superUrgentLotRenderer,
   popupEnabled: false,
   labelsVisible: false,
@@ -694,7 +730,7 @@ const defaultStructureRenderer = new PolygonSymbol3D({
 const structureRenderer = new UniqueValueRenderer({
   defaultSymbol: defaultStructureRenderer,
   defaultLabel: 'Other',
-  field: 'StatusStruc',
+  field: structureStatusField,
   uniqueValueInfos: [
     {
       value: 1,
@@ -752,28 +788,28 @@ export const structureLayer = new FeatureLayer({
         type: 'fields',
         fieldInfos: [
           {
-            fieldName: 'FamilyNumber',
+            fieldName: familyNumberField,
             label: '<b>Number of Families</b>',
           },
           {
-            fieldName: 'StrucOwner',
+            fieldName: strucOwnerField,
             label: 'Structure Owner',
           },
           {
-            fieldName: 'Municipality',
+            fieldName: municipalityField,
           },
           {
-            fieldName: 'Barangay',
+            fieldName: barangayField,
           },
           {
-            fieldName: 'StatusStruc',
+            fieldName: structureStatusField,
             label: '<p>Status for Structure</p>',
           },
           {
-            fieldName: 'Name',
+            fieldName: occupancyNameField,
           },
           {
-            fieldName: 'Status',
+            fieldName: nloLoStatusField,
             label: 'NLO/LO Ownership (structure) ',
           },
         ],
@@ -795,12 +831,10 @@ const nloSymbolRef = [
 ];
 
 const nloRenderer = new UniqueValueRenderer({
-  field: 'StatusRC',
-  valueExpression:
-    "When($feature.StatusRC == 1, 'relocated', $feature.StatusRC == 2, 'paid', $feature.StatusRC == 3, 'payp', $feature.StatusRC == 4, 'legalpass', $feature.StatusRC == 5, 'otc', $feature.StatusRC == 6, 'lbp', $feature.StatusRC)",
+  field: nloStatusField,
   uniqueValueInfos: [
     {
-      value: 'relocated',
+      value: 1,
       label: 'Relocated',
       symbol: new PointSymbol3D({
         symbolLayers: [
@@ -818,7 +852,7 @@ const nloRenderer = new UniqueValueRenderer({
       }),
     },
     {
-      value: 'paid',
+      value: 2,
       label: 'Paid',
       symbol: new PointSymbol3D({
         symbolLayers: [
@@ -836,7 +870,7 @@ const nloRenderer = new UniqueValueRenderer({
       }),
     },
     {
-      value: 'payp',
+      value: 3,
       label: 'For Payment Processing',
       symbol: new PointSymbol3D({
         symbolLayers: [
@@ -854,7 +888,7 @@ const nloRenderer = new UniqueValueRenderer({
       }),
     },
     {
-      value: 'legalpass',
+      value: 4,
       label: 'For Legal Pass',
       symbol: new PointSymbol3D({
         symbolLayers: [
@@ -872,7 +906,7 @@ const nloRenderer = new UniqueValueRenderer({
       }),
     },
     {
-      value: 'otc',
+      value: 5,
       label: 'For Appraisal/OtC/Reqs for Other Entitlements',
       symbol: new PointSymbol3D({
         symbolLayers: [
@@ -890,7 +924,7 @@ const nloRenderer = new UniqueValueRenderer({
       }),
     },
     {
-      value: 'lbp',
+      value: 6,
       label: 'LBP Account Opening',
       symbol: new PointSymbol3D({
         symbolLayers: [
@@ -935,24 +969,24 @@ export const nloLayer = new FeatureLayer({
         type: 'fields',
         fieldInfos: [
           {
-            fieldName: 'StrucOwner',
+            fieldName: strucOwnerField,
             label: 'Structure Owner',
           },
           {
-            fieldName: 'Municipality',
+            fieldName: municipalityField,
           },
           {
-            fieldName: 'Barangay',
+            fieldName: barangayField,
           },
           {
-            fieldName: 'StatusRC',
+            fieldName: nloStatusField,
             label: '<p>Status for Relocation</p>',
           },
           {
-            fieldName: 'Name',
+            fieldName: occupancyNameField,
           },
           {
-            fieldName: 'Status',
+            fieldName: nloStatusField,
             label: 'NLO/LO Ownership (structure) ',
           },
         ],
@@ -963,7 +997,7 @@ export const nloLayer = new FeatureLayer({
 
 /* Structure Ownership Layer */
 let NLOLORenderer = new UniqueValueRenderer({
-  field: 'Status',
+  field: nloLoStatusField,
   uniqueValueInfos: [
     {
       value: 1,
@@ -1018,7 +1052,7 @@ var verticalOffsetExistingOccupancy = {
 const occupancyPointSize = 20;
 
 let occupancyRenderer = new UniqueValueRenderer({
-  field: 'Occupancy',
+  field: occupancyField,
   uniqueValueInfos: [
     {
       value: 0,
@@ -1102,24 +1136,24 @@ export const occupancyLayer = new FeatureLayer({
         type: 'fields',
         fieldInfos: [
           {
-            fieldName: 'StrucOwner',
+            fieldName: strucOwnerField,
             label: 'Structure Owner',
           },
           {
-            fieldName: 'Municipality',
+            fieldName: municipalityField,
           },
           {
-            fieldName: 'Barangay',
+            fieldName: barangayField,
           },
           {
-            fieldName: 'Occupancy',
+            fieldName: occupancyField,
             label: '<p>Status for Relocation(structure)</p>',
           },
           {
-            fieldName: 'Name',
+            fieldName: occupancyNameField,
           },
           {
-            fieldName: 'Status',
+            fieldName: nloLoStatusField,
             label: 'NLO/LO Ownership',
           },
         ],
@@ -1539,7 +1573,7 @@ const treeCutting3DSymbol = (name: any) => {
 const outlineColor = 'gray';
 
 const treeCuttingRenderer = new UniqueValueRenderer({
-  field: 'Status',
+  field: treeStatusField,
   uniqueValueInfos: [
     {
       value: 1,
@@ -1566,11 +1600,11 @@ const treeCuttingRenderer = new UniqueValueRenderer({
     new SizeVariable({
       axis: 'height',
       // field: 'SIZE',
-      valueExpression: 'When($feature.Status >= 1, 5, 0)',
+      valueExpression: `When($feature.${treeStatusField} >= 1, 5, 0)`,
       valueUnit: 'meters',
     }),
     new ColorVariable({
-      valueExpression: '$feature.Status',
+      valueExpression: `$feature.${treeStatusField}`,
       valueExpressionTitle: 'Status Color',
       stops: [
         { value: 1, color: '#71AB48' },
@@ -1608,33 +1642,33 @@ export const treeCuttingLayer = new FeatureLayer({
         type: 'fields',
         fieldInfos: [
           {
-            fieldName: 'ScientificName',
+            fieldName: treeScientificNameField,
             label: 'Scientific Name',
           },
           {
-            fieldName: 'CommonName',
+            fieldName: treeCommonNameField,
             label: 'Common Name',
           },
           {
-            fieldName: 'Province',
+            fieldName: treeProvinceField,
           },
           {
-            fieldName: 'Municipality',
+            fieldName: treeMunicipalityField,
           },
           {
-            fieldName: 'TreeNo',
+            fieldName: treeNoField,
             label: 'Tree No.',
           },
           {
-            fieldName: 'CP',
+            fieldName: treeCpField,
             label: '<h5>CP</h5>',
           },
           {
-            fieldName: 'Compensation',
+            fieldName: treeCompensationStatusField,
             label: 'Status of Tree Compensation',
           },
           {
-            fieldName: 'Conservation',
+            fieldName: treeConservationField,
             label: 'Conservation Status',
           },
         ],
@@ -1647,7 +1681,7 @@ export const treeCuttingLayer = new FeatureLayer({
 export const colorsCompen = ['#0070ff', '#ffff00', '#71ab48'];
 
 const treeCompensationRenderer = new UniqueValueRenderer({
-  field: 'Compensation',
+  field: treeCompensationStatusField,
   uniqueValueInfos: [
     {
       value: 1,
@@ -1668,11 +1702,11 @@ const treeCompensationRenderer = new UniqueValueRenderer({
   visualVariables: [
     new SizeVariable({
       axis: 'height',
-      valueExpression: 'When($feature.Compensation >= 1, 5, 0)',
+      valueExpression: `When($feature.${treeCompensationStatusField} >= 1, 5, 0)`,
       valueUnit: 'meters',
     }),
     new ColorVariable({
-      valueExpression: '$feature.Compensation',
+      valueExpression: `$feature.${treeCompensationStatusField}`,
       valueExpressionTitle: 'Status Color',
       legendOptions: {
         title: '',
@@ -1707,33 +1741,33 @@ export const treeCompensationLayer = new FeatureLayer({
         type: 'fields',
         fieldInfos: [
           {
-            fieldName: 'ScientificName',
+            fieldName: treeScientificNameField,
             label: 'Scientific Name',
           },
           {
-            fieldName: 'CommonName',
+            fieldName: treeCommonNameField,
             label: 'Common Name',
           },
           {
-            fieldName: 'Province',
+            fieldName: treeProvinceField,
           },
           {
-            fieldName: 'Municipality',
+            fieldName: treeMunicipalityField,
           },
           {
-            fieldName: 'TreeNo',
+            fieldName: treeNoField,
             label: 'Tree No.',
           },
           {
-            fieldName: 'CP',
+            fieldName: treeCpField,
             label: '<h5>CP</h5>',
           },
           {
-            fieldName: 'Status',
+            fieldName: treeStatusField,
             label: 'Status of Tree Cutting',
           },
           {
-            fieldName: 'Conservation',
+            fieldName: treeConservationField,
             label: 'Conservation Status',
           },
         ],
@@ -1804,92 +1838,91 @@ function getUniqueValueSymbol(name: string, color: any, sizeS: number) {
 }
 
 const utilPointSymbolRenderer = new UniqueValueRenderer({
-  valueExpression:
-    // eslint-disable-next-line no-multi-str
-    "When($feature.UtilType2 == 1, 'Telecom Pole (BTS)', \
-                        $feature.UtilType2 == 2, 'Telecom Pole (CATV)', \
-                        $feature.UtilType2 == 3, 'Water Meter', \
-                        $feature.UtilType2 == 4, 'Water Valve', \
-                        $feature.UtilType2 == 5, 'Manhole', \
-                        $feature.UtilType2 == 6, 'Drain Box', \
-                        $feature.UtilType2 == 7, 'Electric Pole', \
-                        $feature.UtilType2 == 8, 'Street Light', \
-                        $feature.UtilType2 == 9, 'Junction Box', \
-                        $feature.UtilType2 == 10, 'Coupling', \
-                        $feature.UtilType2 == 11, 'Fitting', \
-                        $feature.UtilType2 == 12, 'Transformer', \
-                        $feature.UtilType2 == 13, 'Truss Guy', \
-                        $feature.UtilType2 == 14, 'Concrete Pedestal', \
-                        $feature.UtilType2 == 15, 'Ground', \
-                        $feature.UtilType2 == 16, 'Down Guy', \
-                        $feature.UtilType2 == 17, 'Entry/Exit Pit', \
-                        $feature.UtilType2 == 18, 'Handhole', \
-                        $feature.UtilType2 == 19, 'Transmission Tower', \
-                        $feature.UtilType)",
+  field: utilityType2Field,
+  // "When($feature.UtilType2 == 1, 'Telecom Pole (BTS)', \
+  //                     $feature.UtilType2 == 2, 'Telecom Pole (CATV)', \
+  //                     $feature.UtilType2 == 3, 'Water Meter', \
+  //                     $feature.UtilType2 == 4, 'Water Valve', \
+  //                     $feature.UtilType2 == 5, 'Manhole', \
+  //                     $feature.UtilType2 == 6, 'Drain Box', \
+  //                     $feature.UtilType2 == 7, 'Electric Pole', \
+  //                     $feature.UtilType2 == 8, 'Street Light', \
+  //                     $feature.UtilType2 == 9, 'Junction Box', \
+  //                     $feature.UtilType2 == 10, 'Coupling', \
+  //                     $feature.UtilType2 == 11, 'Fitting', \
+  //                     $feature.UtilType2 == 12, 'Transformer', \
+  //                     $feature.UtilType2 == 13, 'Truss Guy', \
+  //                     $feature.UtilType2 == 14, 'Concrete Pedestal', \
+  //                     $feature.UtilType2 == 15, 'Ground', \
+  //                     $feature.UtilType2 == 16, 'Down Guy', \
+  //                     $feature.UtilType2 == 17, 'Entry/Exit Pit', \
+  //                     $feature.UtilType2 == 18, 'Handhole', \
+  //                     $feature.UtilType2 == 19, 'Transmission Tower', \
+  //                     $feature.UtilType)",
   uniqueValueInfos: [
     {
-      value: 'Telecom Pole (BTS)',
+      value: 1,
       symbol: customSymbol3D('3D_Telecom_BTS'),
     },
     {
-      value: 'Telecom Pole (CATV)',
+      value: 2,
       symbol: customSymbol3D('3D_TelecomCATV_Pole'),
     },
     {
-      value: 'Manhole',
+      value: 5,
       symbol: utilPtSymbolStreet('Storm_Drain'),
     },
     {
-      value: 'Electric Pole',
+      value: 7,
       //symbol: utilPtSymbolInfra("Powerline_Pole")
       symbol: customSymbol3D('3D_Electric_Pole'),
     },
     {
-      value: 'Street Light',
+      value: 8,
       symbol: utilPtSymbolStreet('Overhanging_Street_and_Sidewalk_-_Light_on'),
     },
     {
-      value: 'Junction Box',
+      value: 9,
       symbol: customSymbol3D('3D_Drain_Box'),
     },
     {
-      value: 'Coupling',
+      value: 10,
       symbol: customSymbol3D('3D_Drain_Box'),
     },
     {
-      value: 'Fitting',
+      value: 11,
       symbol: customSymbol3D('3D_Drain_Box'),
     },
     {
-      value: 'Transformer',
+      value: 12,
       symbol: customSymbol3D('3D_Drain_Box'),
     },
     {
-      value: 'Truss Guy',
+      value: 13,
       symbol: customSymbol3D('3D_Drain_Box'),
     },
     {
-      value: 'Concrete Pedestal',
+      value: 14,
       symbol: customSymbol3D('Concrete Pedestal'),
     },
     {
-      value: 'Ground',
+      value: 15,
       symbol: customSymbol3D('3D_Drain_Box'),
     },
     {
-      value: 'Down Guy',
+      value: 16,
       symbol: customSymbol3D('3D_Drain_Box'),
     },
     {
-      value: 'Entry/Exit Pit',
+      value: 17,
       symbol: customSymbol3D('3D_Drain_Box'),
     },
     {
-      value: 'Handhole',
+      value: 18,
       symbol: customSymbol3D('3D_Drain_Box'),
     },
     {
-      value: 'Transmission Tower',
+      value: 19,
       symbol: utilPtSymbolInfra('Powerline_Pole'),
     },
   ],
@@ -1919,7 +1952,7 @@ export const utilityPointLayer = new FeatureLayer({
   elevationInfo: {
     mode: 'relative-to-ground', // original was "relative-to-scene"
     featureExpressionInfo: {
-      expression: '$feature.Height',
+      expression: `$feature.${utilityHeightField}`,
     },
     unit: 'meters',
     //offset: 0
@@ -1933,29 +1966,29 @@ export const utilityPointLayer = new FeatureLayer({
         type: 'fields',
         fieldInfos: [
           {
-            fieldName: 'Id',
+            fieldName: utilityIdField,
           },
           {
-            fieldName: 'UtilType',
+            fieldName: utilityTypeField,
             label: 'Utility Type',
           },
           {
-            fieldName: 'UtilType2',
+            fieldName: utilityType2Field,
             label: 'Utility Name',
           },
           {
-            fieldName: 'LAYER',
+            fieldName: utilityActionField,
             label: '<h5>Action</h5>',
           },
           {
-            fieldName: 'Status',
+            fieldName: utilityStatusField,
             label: '<h5>Status</h5>',
           },
           {
-            fieldName: 'CP',
+            fieldName: utilityCpField,
           },
           {
-            fieldName: 'Remarks',
+            fieldName: utilityRemarksField,
           },
         ],
       },
@@ -1966,13 +1999,21 @@ export const utilityPointLayer = new FeatureLayer({
 const utilityStatusRenderer = new UniqueValueRenderer({
   valueExpression:
     // eslint-disable-next-line no-multi-str
+    // `When($feature.${utilityRemarksField} == 'pending', 'NoAction', \
+    //       $feature.${utilityStatusField} == 1 && $feature.${utilityActionField} == 1, 'DemolishComplete',\
+    //       $feature.${utilityStatusField} == 0 && $feature.${utilityActionField} == 1, 'DemolishIncomplete',\
+    //       $feature.${utilityStatusField} == 0 && $feature.${utilityActionField} == 2, 'RelocIncomplete', \
+    //       $feature.${utilityStatusField} == 1 && $feature.${utilityActionField} == 2, 'RelocComplete', \
+    //       $feature.${utilityStatusField} == 0 && $feature.${utilityActionField} == 3, 'NewlyAdded', \
+    //       $feature.${utilityStatusField} == 1 && $feature.${utilityActionField}== 3, 'NewlyAddedComplete',$feature.${utilityCompanyField})
+    //       )`,
     "When($feature.Remarks == 'pending', 'NoAction', \
-                        $feature.Status == 1 && $feature.LAYER == 1, 'DemolishComplete',\
-                        $feature.Status == 0 && $feature.LAYER == 1, 'DemolishIncomplete',\
-                        $feature.Status == 0 && $feature.LAYER == 2, 'RelocIncomplete', \
-                        $feature.Status == 1 && $feature.LAYER == 2, 'RelocComplete', \
-                        $feature.Status == 0 && $feature.LAYER == 3, 'NewlyAdded', \
-                        $feature.Status == 1 && $feature.LAYER == 3, 'NewlyAddedComplete',$feature.Comp_Agency)",
+                      $feature.Status == 1 && $feature.LAYER == 1, 'DemolishComplete',\
+                      $feature.Status == 0 && $feature.LAYER == 1, 'DemolishIncomplete',\
+                      $feature.Status == 0 && $feature.LAYER == 2, 'RelocIncomplete', \
+                      $feature.Status == 1 && $feature.LAYER == 2, 'RelocComplete', \
+                      $feature.Status == 0 && $feature.LAYER == 3, 'NewlyAdded', \
+                      $feature.Status == 1 && $feature.LAYER == 3, 'NewlyAddedComplete',$feature.Comp_Agency)",
   uniqueValueInfos: [
     {
       value: 'DemolishIncomplete',
