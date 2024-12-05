@@ -157,9 +157,10 @@ const TreeChart = (props: any) => {
 
     // Set slice opacity and stroke color
     pieSeries.slices.template.setAll({
+      toggleKey: 'none',
       fillOpacity: 0.9,
       stroke: am5.color('#ffffff'),
-      strokeWidth: 1,
+      strokeWidth: 0.5,
       strokeOpacity: 1,
       templateField: 'sliceSettings',
     });
@@ -362,9 +363,10 @@ const TreeChart = (props: any) => {
 
     // Set slice opacity and stroke color
     pieSeries.slices.template.setAll({
+      toggleKey: 'none',
       fillOpacity: 0.9,
       stroke: am5.color('#ffffff'),
-      strokeWidth: 1,
+      strokeWidth: 0.5,
       strokeOpacity: 1,
       templateField: 'sliceSettings',
     });

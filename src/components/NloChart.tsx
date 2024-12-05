@@ -8,7 +8,7 @@ import * as am5percent from '@amcharts/amcharts5/percent';
 import am5themes_Animated from '@amcharts/amcharts5/themes/Animated';
 import am5themes_Responsive from '@amcharts/amcharts5/themes/Responsive';
 import { generateNloData, generateNloNumber, statusNloChart, thousands_separators } from '../Query';
-import { primaryLabelColor, valueLabelColor } from '../StatusUniqueValues';
+import { nloStatusField, primaryLabelColor, valueLabelColor } from '../StatusUniqueValues';
 import '@esri/calcite-components/dist/components/calcite-label';
 import { CalciteLabel } from '@esri/calcite-components-react';
 //https://codesandbox.io/s/amcharts5-react-demo-forked-gid7b0?from-embed=&file=/src/App.js:271-276
@@ -127,6 +127,7 @@ const NloChart = memo((props: any) => {
 
     // Set slice opacity and stroke color
     pieSeries.slices.template.setAll({
+      toggleKey: 'none',
       fillOpacity: 0.9,
       stroke: am5.color('#ffffff'),
       strokeWidth: 0.5,
@@ -188,7 +189,7 @@ const NloChart = memo((props: any) => {
           }); // End of queryFeatures
 
           layerView.filter = new FeatureFilter({
-            where: 'StatusLA = ' + typeSelect,
+            where: `${nloStatusField} = ` + typeSelect,
           });
         }); // End of view.whenLayerView
       }); // End of view.whenv
