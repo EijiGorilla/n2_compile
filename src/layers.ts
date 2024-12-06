@@ -2364,6 +2364,79 @@ const utilityLineLabelClass = new LabelClass({
   symbol: utilLineStatusTextSymbol,
 });
 
+////
+// NGCR Utility line between P178 and P229
+const utilityLineLabelClassNGCP = new LabelClass({
+  symbol: new LabelSymbol3D({
+    symbolLayers: [
+      new TextSymbol3DLayer({
+        material: {
+          color: '#e8ff00ff',
+        },
+        size: 16,
+        halo: {
+          color: 'black',
+          size: 1,
+        },
+        font: {
+          family: 'Ubuntu Mono',
+          weight: 'bold',
+        },
+      }),
+    ],
+    verticalOffset: {
+      screenLength: 120,
+      maxWorldLength: 700,
+      minWorldLength: 25,
+      // screenLength: 80,
+      // maxWorldLength: 500,
+      // minWorldLength: 30,
+    },
+    callout: {
+      type: 'line', // autocasts as new LineCallout3D()
+      color: 'grey',
+      size: 1,
+      border: {
+        color: 'grey',
+      },
+    },
+  }),
+  labelPlacement: 'above-center', // Polyline has not choice
+  labelExpressionInfo: {
+    expression: `$feature.Company + " (P178-P229)"`,
+  },
+});
+
+export const utilityLineNGCP = new FeatureLayer({
+  portalItem: {
+    id: '3dbd0454687a4100905ce7222299e43d',
+    portal: {
+      url: 'https://gis.railway-sector.com/portal',
+    },
+  },
+  title: 'NGCP Line',
+  elevationInfo: {
+    mode: 'on-the-ground',
+  },
+  labelingInfo: [utilityLineLabelClassNGCP],
+});
+
+function renderutilityLineNGCP() {
+  const renderer = new UniqueValueRenderer({
+    field: 'utiltype2',
+  });
+  renderer.addUniqueValueInfo({
+    value: 8,
+    label: 'P178 - P229',
+    symbol: lineSizeShapeSymbolLayers('circle', 'none', 'miter', 2.5, 2.5, 'all', 8 - 1),
+  });
+  utilityLineNGCP.renderer = renderer;
+}
+
+renderutilityLineNGCP();
+
+//////////////////////
+
 export const utilityLineLayer1 = new FeatureLayer({
   portalItem: {
     id: '7507e625f480470a9af257d60cf67c1c',

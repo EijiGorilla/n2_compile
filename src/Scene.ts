@@ -32,8 +32,9 @@ import {
   utilityLineLayer1,
   viaductLayer,
   buildingLayer,
+  utilityLineNGCP,
 } from './layers';
-import { highlightLot } from './Query';
+import { highlightLot, zoomToLayer } from './Query';
 
 export const map = new Map({
   basemap: 'dark-gray-vector', // "streets-night-vector", basemap
@@ -73,7 +74,13 @@ const utilityGroupLayer = new GroupLayer({
   title: 'Utility Relocation',
   visible: false,
   visibilityMode: 'independent',
-  layers: [utilityLineLayer1, utilityLineLayer, utilityPointLayer1, utilityPointLayer],
+  layers: [
+    utilityLineLayer1,
+    utilityLineLayer,
+    utilityPointLayer1,
+    utilityPointLayer,
+    utilityLineNGCP,
+  ],
 });
 
 // Change the layer order by using index numbers in map.add
@@ -105,48 +112,122 @@ export const basemaps = new BasemapGallery({
   container: undefined,
 });
 
-// highlight super urgent
+////////////////////////////////
+// LayerList with widget with actions (sample)
+async function defineActions(event: any) {
+  const { item } = event;
+
+  // await item.layer.when();
+
+  if (item.title === 'NGCP Line') {
+    item.open = true;
+    item.actionsSections = [
+      [
+        {
+          title: 'Zoom to points',
+          className: 'esri-icon-zoom-to-object',
+          id: 'full-extent',
+        },
+      ],
+      // [
+      //   {
+      //     title: 'Highlight points',
+      //     className: 'esri-icon-lightbulb',
+      //     id: 'highlight-layer',
+      //   },
+      // ],
+    ];
+  }
+
+  if (item.layer.type !== 'group') {
+    item.panel = {
+      content: 'legend',
+      open: true,
+    };
+  }
+
+  item.title === 'Chainage' ||
+  item.title === 'NLO (Non-Land Owner)' ||
+  item.title === 'NLO/LO Ownership (Structure)' ||
+  item.title === 'Occupancy (Structure)' ||
+  item.title === 'Structure' ||
+  item.title === 'Land Acquisition (Endorsed Status)' ||
+  item.title === 'Super Urgent Lot' ||
+  item.title === 'Handed-Over (public + private)' ||
+  item.title === 'Tree Cutting' ||
+  item.title === 'Tree Compensation' ||
+  item.title === 'Point (symbol)' ||
+  item.title === 'Point (status)' ||
+  item.title === 'Line (symbol)' ||
+  item.title === 'Line (status)' ||
+  item.title === 'Pier Head/Column' ||
+  item.title === 'Viaduct' ||
+  item.title === 'Station Structures'
+    ? (item.visible = false)
+    : (item.visible = true);
+}
+
 export const layerList = new LayerList({
   view: view,
   selectionMode: 'multiple',
   visibilityAppearance: 'checkbox',
   container: undefined,
-  listItemCreatedFunction: (event) => {
-    const item = event.item;
-    if (item.layer.type !== 'group') {
-      item.panel = {
-        content: 'legend',
-        open: true,
-      };
-    }
-
-    if (item.title === 'Super Urgent Lot') {
-      highlightLot(superUrgentLotLayer);
-    } else if (item.title === 'Handed-Over (public + private)') {
-      highlightLot(handedOverLotLayer);
-    }
-
-    item.title === 'Chainage' ||
-    item.title === 'NLO (Non-Land Owner)' ||
-    item.title === 'NLO/LO Ownership (Structure)' ||
-    item.title === 'Occupancy (Structure)' ||
-    item.title === 'Structure' ||
-    item.title === 'Land Acquisition (Endorsed Status)' ||
-    item.title === 'Super Urgent Lot' ||
-    item.title === 'Handed-Over (public + private)' ||
-    item.title === 'Tree Cutting' ||
-    item.title === 'Tree Compensation' ||
-    item.title === 'Point (symbol)' ||
-    item.title === 'Point (status)' ||
-    item.title === 'Line (symbol)' ||
-    item.title === 'Line (status)' ||
-    item.title === 'Pier Head/Column' ||
-    item.title === 'Viaduct' ||
-    item.title === 'Station Structures'
-      ? (item.visible = false)
-      : (item.visible = true);
-  },
+  listItemCreatedFunction: defineActions,
 });
+
+layerList.on('trigger-action', (event) => {
+  // capture the action id
+  const id = event.action.id;
+
+  if (id === 'full-extent') {
+    zoomToLayer(utilityLineNGCP);
+  }
+});
+
+/////////////////////////////////////
+
+// highlight super urgent
+// export const layerList = new LayerList({
+//   view: view,
+//   selectionMode: 'multiple',
+//   visibilityAppearance: 'checkbox',
+//   container: undefined,
+//   listItemCreatedFunction: (event) => {
+//     const item = event.item;
+//     if (item.layer.type !== 'group') {
+//       item.panel = {
+//         content: 'legend',
+//         open: true,
+//       };
+//     }
+
+//     if (item.title === 'Super Urgent Lot') {
+//       highlightLot(superUrgentLotLayer);
+//     } else if (item.title === 'Handed-Over (public + private)') {
+//       highlightLot(handedOverLotLayer);
+//     }
+
+//     item.title === 'Chainage' ||
+//     item.title === 'NLO (Non-Land Owner)' ||
+//     item.title === 'NLO/LO Ownership (Structure)' ||
+//     item.title === 'Occupancy (Structure)' ||
+//     item.title === 'Structure' ||
+//     item.title === 'Land Acquisition (Endorsed Status)' ||
+//     item.title === 'Super Urgent Lot' ||
+//     item.title === 'Handed-Over (public + private)' ||
+//     item.title === 'Tree Cutting' ||
+//     item.title === 'Tree Compensation' ||
+//     item.title === 'Point (symbol)' ||
+//     item.title === 'Point (status)' ||
+//     item.title === 'Line (symbol)' ||
+//     item.title === 'Line (status)' ||
+//     item.title === 'Pier Head/Column' ||
+//     item.title === 'Viaduct' ||
+//     item.title === 'Station Structures'
+//       ? (item.visible = false)
+//       : (item.visible = true);
+//   },
+// });
 
 // Measurement Tool
 export const measurement = new Measurement({
