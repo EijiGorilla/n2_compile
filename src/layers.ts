@@ -702,7 +702,7 @@ const lbp = new PolygonSymbol3D({
     new ExtrudeSymbol3DLayer({
       size: height,
       material: {
-        color: [255, 0, 0, 0.5],
+        color: [255, 87, 51, 0.6],
       },
       edges: new SolidEdges3D({
         color: '#4E4E4E',

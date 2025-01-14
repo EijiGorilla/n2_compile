@@ -524,7 +524,7 @@ export async function generateStructureData() {
         category: statusStructure[5],
         value: lbp,
         sliceSettings: {
-          fill: am5.color('#FF0000'),
+          fill: am5.color('#FF5733'),
         },
       },
     ];
