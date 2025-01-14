@@ -33,6 +33,8 @@ import {
   viaductLayer,
   buildingLayer,
   utilityLineNGCP,
+  ngcp_working_area,
+  ngcp_tagged_structureLayer,
 } from './layers';
 import { highlightLot, zoomToLayer } from './Query';
 
@@ -63,6 +65,13 @@ const lotGroupLayer = new GroupLayer({
   layers: [endorsedLotLayer, lotLayer, pnrLayer],
 });
 
+const ngcp2_groupLayer = new GroupLayer({
+  title: 'NGCP Site 2',
+  visible: false,
+  visibilityMode: 'independent',
+  layers: [ngcp_tagged_structureLayer, ngcp_working_area],
+});
+
 const treeGroupLayer = new GroupLayer({
   title: 'Tree Cutting & Compensation',
   visible: false,
@@ -90,6 +99,7 @@ map.add(pierAccessLayer);
 map.add(utilityGroupLayer);
 map.add(treeGroupLayer);
 map.add(lotGroupLayer);
+map.add(ngcp2_groupLayer);
 map.add(structureLayer);
 map.add(nloLoOccupancyGroupLayer);
 map.add(alignmentGroupLayer);
@@ -126,7 +136,7 @@ async function defineActions(event: any) {
         {
           title: 'Zoom to points',
           className: 'esri-icon-zoom-to-object',
-          id: 'full-extent',
+          id: 'full-extent-ngcpline',
         },
       ],
       // [
@@ -137,6 +147,34 @@ async function defineActions(event: any) {
       //   },
       // ],
     ];
+  }
+
+  if (item.title === 'NGCP Pole Relocation Working Area') {
+    item.open = true;
+    item.actionsSections = [
+      [
+        {
+          title: 'Zoom to Area',
+          className: 'esri-icon-zoom-to-object',
+          id: 'full-extent-ngcpworkarea',
+        },
+      ],
+    ];
+  }
+
+  if (item.title === 'NGCP Pole Relocation Tagged Structures') {
+    item.open = true;
+    item.actionsSections = [
+      [
+        {
+          title: 'Zoom to Tagged Structure',
+          className: 'esri-icon-zoom-to-object',
+          id: 'full-extent-taggedstructure',
+        },
+      ],
+    ];
+
+    highlightLot(ngcp_tagged_structureLayer);
   }
 
   if (item.layer.type !== 'group') {
@@ -151,6 +189,8 @@ async function defineActions(event: any) {
   item.title === 'NLO/LO Ownership (Structure)' ||
   item.title === 'Occupancy (Structure)' ||
   item.title === 'Structure' ||
+  item.title === 'NGCP Pole Relocation Working Area' ||
+  item.title === 'NGCP Pole Relocation Tagged Structures' ||
   item.title === 'Land Acquisition (Endorsed Status)' ||
   item.title === 'Super Urgent Lot' ||
   item.title === 'Handed-Over (public + private)' ||
@@ -179,8 +219,12 @@ layerList.on('trigger-action', (event) => {
   // capture the action id
   const id = event.action.id;
 
-  if (id === 'full-extent') {
+  if (id === 'full-extent-ngcpline') {
     zoomToLayer(utilityLineNGCP);
+  } else if (id === 'full-extent-ngcpworkarea') {
+    zoomToLayer(ngcp_working_area);
+  } else if (id === 'full-extent-taggedstructure') {
+    zoomToLayer(ngcp_tagged_structureLayer);
   }
 });
 
