@@ -8,6 +8,7 @@ import { lotLayer } from '../layers';
 import { view } from '../Scene';
 import Query from '@arcgis/core/rest/support/Query';
 import FeatureFilter from '@arcgis/core/layers/support/FeatureFilter';
+import { useContractPackageContext } from './ContractPackageContext';
 
 // Dispose function
 function maybeDisposeRoot(divId: any) {
@@ -17,7 +18,8 @@ function maybeDisposeRoot(divId: any) {
     }
   });
 }
-const LotProgressChart = (props: any) => {
+const LotProgressChart = () => {
+  const { cpValueSelected } = useContractPackageContext();
   const legendRef = useRef<unknown | any | undefined>({});
   const xAxisRef = useRef<unknown | any | undefined>({});
   const yAxisRef = useRef<unknown | any | undefined>({});
@@ -26,10 +28,10 @@ const LotProgressChart = (props: any) => {
 
   const chartID = 'lot-progress';
   useEffect(() => {
-    generateLotProgress(props.contractp).then((result: any) => {
+    generateLotProgress(cpValueSelected).then((result: any) => {
       setLotProgressData(result);
     });
-  }, [props.contractp]);
+  }, [cpValueSelected]);
 
   useEffect(() => {
     maybeDisposeRoot(chartID);
@@ -201,12 +203,12 @@ const LotProgressChart = (props: any) => {
 
       // const qExpression =
       const queryDefault = '1=1';
-      const queryContractp = "CP = '" + props.contractp + "'";
+      const queryContractp = "CP = '" + cpValueSelected + "'";
       const qDate =
         'HandedOverDate IS NOT NULL' + ' AND ' + "HandedOverDate = date'" + selectedDate + "'";
 
       var query = lotLayer.createQuery();
-      if (props.contractp === 'All') {
+      if (cpValueSelected === 'All') {
         query.where = qDate + ' AND ' + queryDefault;
       } else {
         query.where = qDate + ' AND ' + queryContractp;

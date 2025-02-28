@@ -17,6 +17,7 @@ import {
 import { primaryLabelColor, valueLabelColor } from '../StatusUniqueValues';
 import '@esri/calcite-components/dist/components/calcite-label';
 import { CalciteLabel } from '@esri/calcite-components-react';
+import { useContractPackageContext } from './ContractPackageContext';
 
 // Dispose function
 function maybeDisposeRoot(divId: any) {
@@ -28,7 +29,8 @@ function maybeDisposeRoot(divId: any) {
 }
 
 // Draw chart
-const ViaductChart = (props: any) => {
+const ViaductChart = () => {
+  const { cpValueSelected } = useContractPackageContext();
   const legendRef = useRef<unknown | any | undefined>({});
   const chartRef = useRef<unknown | any | undefined>({});
   const [chartData, setChartData] = useState([]);
@@ -37,14 +39,14 @@ const ViaductChart = (props: any) => {
   const chartID = 'viaduct-bar';
 
   useEffect(() => {
-    generateViaductChartData(props.contractp).then((response: any) => {
+    generateViaductChartData(cpValueSelected).then((response: any) => {
       setChartData(response);
     });
 
-    generateTotalProgress(props.contractp).then((response: any) => {
+    generateTotalProgress(cpValueSelected).then((response: any) => {
       setProgress(response);
     });
-  }, [props.contractp]);
+  }, [cpValueSelected]);
 
   // Define parameters
   const marginTop = 0;
@@ -261,7 +263,7 @@ const ViaductChart = (props: any) => {
 
         const expression =
           "CP = '" +
-          props.contractp +
+          cpValueSelected +
           "'" +
           ' AND ' +
           'Type = ' +
@@ -352,7 +354,7 @@ const ViaductChart = (props: any) => {
             alt="Land Logo"
             height={'50px'}
             width={'50px'}
-            style={{ marginLeft: '260px', display: 'flex', marginTop: '-70px' }}
+            style={{ marginLeft: '290px', display: 'flex', marginTop: '-70px' }}
           />
         </b>
       </CalciteLabel>

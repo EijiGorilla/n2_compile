@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { exteriorShellLayer, handedOverLotLayer, lotLayer } from '../layers';
+import { handedOverLotLayer, lotLayer } from '../layers';
 import { view } from '../Scene';
 import FeatureFilter from '@arcgis/core/layers/support/FeatureFilter';
 import Query from '@arcgis/core/rest/support/Query';
 import * as am5 from '@amcharts/amcharts5';
-import * as am5xy from '@amcharts/amcharts5/xy';
 import * as am5percent from '@amcharts/amcharts5/percent';
 import am5themes_Animated from '@amcharts/amcharts5/themes/Animated';
 import am5themes_Responsive from '@amcharts/amcharts5/themes/Responsive';
@@ -15,8 +14,6 @@ import {
   generateLotNumber,
   highlightLot,
   highlightRemove,
-  statusLotChart,
-  statusMoaLotChart,
   thousands_separators,
   zoomToLayer,
 } from '../Query';
@@ -39,6 +36,7 @@ import {
   statusLotQuery,
   valueLabelColor,
 } from '../StatusUniqueValues';
+import { useContractPackageContext } from './ContractPackageContext';
 
 // Dispose function
 function maybeDisposeRoot(divId: any) {
@@ -51,7 +49,9 @@ function maybeDisposeRoot(divId: any) {
 
 ///*** Others */
 /// Draw chart
-const LotChart = (props: any) => {
+const LotChart = () => {
+  const { cpValueSelected } = useContractPackageContext();
+
   // 1. Land Acquisition
   const pieSeriesRef = useRef<unknown | any | undefined>({});
   const legendRef = useRef<unknown | any | undefined>({});
@@ -71,13 +71,6 @@ const LotChart = (props: any) => {
   const [lotNumber, setLotNumber] = useState([]);
   const [handedOverNumber, setHandedOverNumber] = useState([]);
 
-  // 2.Mode of Acquisition
-  const barSeriesRef = useRef<unknown | any | undefined>({});
-  const yAxisRef = useRef<unknown | any | undefined>({});
-  const chartRef_moa = useRef<unknown | any | undefined>({});
-  const [lotMoaData, setLotMoaData] = useState([]);
-  const chartID_moa = 'land-moa';
-
   // Super urgent control items
   const superurgent_items = ['OFF', 'ON'];
   const [superUrgentSelected, setSuperUrgentSelected] = useState<any>(superurgent_items[0]);
@@ -88,11 +81,11 @@ const LotChart = (props: any) => {
   // Query
 
   const queryDefault = '1=1';
-  const queryContractp = `${cpField} = '` + props.contractp + "'";
+  const queryContractp = `${cpField} = '` + cpValueSelected + "'";
   const querySuperUrgentCp = querySuperUrgent + ' AND ' + queryContractp;
 
   if (superUrgentSelected === superurgent_items[0]) {
-    if (props.contractp === 'All') {
+    if (cpValueSelected === 'All') {
       lotLayer.definitionExpression = queryDefault;
       handedOverLotLayer.definitionExpression = queryDefault;
     } else {
@@ -101,7 +94,7 @@ const LotChart = (props: any) => {
     }
   } else if (superUrgentSelected === superurgent_items[1]) {
     // ON
-    if (props.contractp === 'All') {
+    if (cpValueSelected === 'All') {
       lotLayer.definitionExpression = querySuperUrgent;
       handedOverLotLayer.definitionExpression = querySuperUrgent;
     } else {
@@ -110,7 +103,7 @@ const LotChart = (props: any) => {
     }
   }
 
-  // if (props.contractp === 'All') {
+  // if (cpValueSelected === 'All') {
   //   lotLayer.definitionExpression = queryDefault;
   // } else {
   //   lotLayer.definitionExpression = queryContractp;
@@ -143,17 +136,12 @@ const LotChart = (props: any) => {
       setLotNumber(response);
     });
 
-    generateHandedOverLotsNumber(superUrgentSelected, props.contractp).then((response: any) => {
+    generateHandedOverLotsNumber(superUrgentSelected, cpValueSelected).then((response: any) => {
       setHandedOverNumber(response);
     });
 
-    // Mode of Acquisition
-    generateLotMoaData().then((response: any) => {
-      setLotMoaData(response);
-    });
-
     zoomToLayer(lotLayer);
-  }, [superUrgentSelected, props.contractp]);
+  }, [superUrgentSelected, cpValueSelected]);
 
   // 1. Pie Chart for Land Acquisition
   useEffect(() => {
@@ -189,7 +177,7 @@ const LotChart = (props: any) => {
         legendValueText: "{valuePercentTotal.formatNumber('#.')}% ({value})",
         radius: am5.percent(45), // outer radius
         innerRadius: am5.percent(28),
-        scale: 2.2,
+        scale: 2.5,
       }),
     );
     pieSeriesRef.current = pieSeries;
@@ -370,207 +358,6 @@ const LotChart = (props: any) => {
     legendRef.current?.data.setAll(pieSeriesRef.current.dataItems);
   });
 
-  // Mode of Acquisition
-  // useEffect(() => {
-  //   // Dispose previously created root element
-
-  //   maybeDisposeRoot(chartID_moa);
-
-  //   var root2 = am5.Root.new(chartID_moa);
-  //   root2.container.children.clear();
-  //   root2._logo?.dispose();
-
-  //   // Set themesf
-  //   // https://www.amcharts.com/docs/v5/concepts/themes/
-  //   root2.setThemes([am5themes_Animated.new(root2), am5themes_Responsive.new(root2)]);
-
-  //   // Create chart
-  //   // https://www.amcharts.com/docs/v5/charts/xy-chart/
-  //   var chart = root2.container.children.push(
-  //     am5xy.XYChart.new(root2, {
-  //       panX: false,
-  //       panY: false,
-  //       wheelX: 'none',
-  //       wheelY: 'none',
-  //       paddingLeft: 0,
-  //     }),
-  //   );
-  //   chartRef_moa.current = chart;
-
-  //   // Create axes
-  //   // https://www.amcharts.com/docs/v5/charts/xy-chart/axes/
-  //   var yRenderer = am5xy.AxisRendererY.new(root2, {
-  //     minGridDistance: 5,
-  //     strokeOpacity: 1,
-  //     strokeWidth: 1,
-  //     inversed: true,
-  //     stroke: am5.color('#ffffff'),
-  //   });
-  //   yRenderer.grid.template.set('location', 1);
-
-  //   var yAxis = chart.yAxes.push(
-  //     am5xy.CategoryAxis.new(root2, {
-  //       maxDeviation: 0,
-  //       categoryField: 'category',
-  //       renderer: yRenderer,
-  //     }),
-  //   );
-
-  //   // Remove grid lines
-  //   yAxis.get('renderer').grid.template.set('forceHidden', true);
-
-  //   var xAxis = chart.xAxes.push(
-  //     am5xy.ValueAxis.new(root2, {
-  //       maxDeviation: 0,
-  //       min: 0,
-  //       strictMinMax: true,
-  //       calculateTotals: true,
-  //       renderer: am5xy.AxisRendererX.new(root2, {
-  //         visible: true,
-  //         strokeOpacity: 1,
-  //         strokeWidth: 1,
-  //         stroke: am5.color('#ffffff'),
-  //       }),
-  //     }),
-  //   );
-  //   // Remove grid lines
-  //   xAxis.get('renderer').grid.template.set('forceHidden', true);
-
-  //   // Label properties for yAxis (category axis)
-  //   yAxis.get('renderer').labels.template.setAll({
-  //     //oversizedBehavior: "wrap",
-  //     textAlign: 'center',
-  //     fill: am5.color('#ffffff'),
-  //     //maxWidth: 150,
-  //     fontSize: 12,
-  //   });
-
-  //   xAxis.get('renderer').labels.template.setAll({
-  //     fill: am5.color('#ffffff'),
-  //     fontSize: 10,
-  //   });
-
-  //   // Create series
-  //   // https://www.amcharts.com/docs/v5/charts/xy-chart/series/
-  //   var series = chart.series.push(
-  //     am5xy.ColumnSeries.new(root2, {
-  //       name: 'Series 1',
-  //       xAxis: xAxis,
-  //       yAxis: yAxis,
-  //       valueXField: 'value',
-  //       sequencedInterpolation: true,
-  //       categoryYField: 'category',
-  //     }),
-  //   );
-  //   barSeriesRef.current = series;
-  //   chart.series.push(series);
-
-  //   var columnTemplate = series.columns.template;
-
-  //   columnTemplate.setAll({
-  //     draggable: true,
-  //     cursorOverStyle: 'pointer',
-  //     tooltipText: '{value}',
-  //     cornerRadiusBR: 10,
-  //     cornerRadiusTR: 10,
-  //     strokeOpacity: 0,
-  //   });
-
-  //   // Add Label bullet
-  //   series.bullets.push(function () {
-  //     return am5.Bullet.new(root2, {
-  //       locationY: 1,
-  //       sprite: am5.Label.new(root2, {
-  //         text: '{value}',
-  //         fill: root2.interfaceColors.get('alternativeText'),
-  //         centerY: 8,
-  //         centerX: am5.p50,
-  //         fontSize: 13,
-  //         populateText: true,
-  //       }),
-  //     });
-  //   });
-
-  //   // Use different color by column
-  //   /*
-  //       columnTemplate.adapters.add('fill', (fill, target) => {
-  //         return chart.get('colors').getIndex(series.columns.indexOf(target));
-  //       });
-
-  //       columnTemplate.adapters.add('stroke', (stroke, target) => {
-  //         return chart.get('colors').getIndex(series.columns.indexOf(target));
-  //       });
-  //       */
-
-  //   series.columns.template.events.on('click', function (ev) {
-  //     const selected: any = ev.target.dataItem?.dataContext;
-  //     const categorySelect: string = selected.category;
-  //     const find = statusMoaLotChart.find((emp: any) => emp.category === categorySelect);
-  //     const statusSelect = find?.value;
-
-  //     var highlightSelect: any;
-
-  //     var query = lotLayer.createQuery();
-  //     view.whenLayerView(lotLayer).then(function (layerView) {
-  //       //CHART_ELEMENT.style.visibility = "visible";
-
-  //       lotLayer.queryFeatures(query).then(function (results) {
-  //         const RESULT_LENGTH = results.features;
-  //         const ROW_N = RESULT_LENGTH.length;
-
-  //         let objID = [];
-  //         for (var i = 0; i < ROW_N; i++) {
-  //           var obj = results.features[i].attributes.OBJECTID;
-  //           objID.push(obj);
-  //         }
-
-  //         var queryExt = new Query({
-  //           objectIds: objID,
-  //         });
-
-  //         lotLayer.queryExtent(queryExt).then(function (result) {
-  //           if (result.extent) {
-  //             view.goTo(result.extent);
-  //           }
-  //         });
-
-  //         if (highlightSelect) {
-  //           highlightSelect.remove();
-  //         }
-  //         highlightSelect = layerView.highlight(objID);
-
-  //         view.on('click', function () {
-  //           layerView.filter = new FeatureFilter({
-  //             where: undefined,
-  //           });
-  //           highlightSelect.remove();
-  //         });
-  //       });
-  //       layerView.filter = new FeatureFilter({
-  //         where: 'MoA = ' + statusSelect,
-  //       });
-  //     }); // End of whenLayerView
-  //   });
-
-  //   yAxisRef.current = yAxis;
-  //   yAxis.data.setAll(lotMoaData);
-  //   series.data.setAll(lotMoaData);
-
-  //   // Make stuff animate on load
-  //   // https://www.amcharts.com/docs/v5/concepts/animations/
-  //   series.appear(1000);
-  //   chart.appear(1000, 100);
-
-  //   return () => {
-  //     root2.dispose();
-  //   };
-  // }, [chartID_moa, lotMoaData]);
-
-  // useEffect(() => {
-  //   barSeriesRef.current?.data.setAll(lotMoaData);
-  //   yAxisRef.current?.data.setAll(lotMoaData);
-  // });
-
   return (
     <>
       <div
@@ -600,9 +387,9 @@ const LotChart = (props: any) => {
           <img
             src="https://EijiGorilla.github.io/Symbols/Land_logo.png"
             alt="Land Logo"
-            height={'50px'}
-            width={'50px'}
-            style={{ marginLeft: '260px', display: 'flex', marginTop: '-50px' }}
+            height={'45px'}
+            width={'45px'}
+            style={{ marginLeft: '290px', display: 'flex', marginTop: '-50px' }}
           />
         </b>
       </CalciteLabel>
@@ -649,7 +436,7 @@ const LotChart = (props: any) => {
       <div
         id={chartID}
         style={{
-          height: '48vh',
+          height: '50vh',
           backgroundColor: 'rgb(0,0,0,0)',
           color: 'white',
           marginTop: '8%',
@@ -715,24 +502,11 @@ const LotChart = (props: any) => {
               alt="Land Logo"
               height={'50px'}
               width={'50px'}
-              style={{ marginLeft: '260px', display: 'flex', marginTop: '-60px' }}
+              style={{ marginLeft: '290px', display: 'flex', marginTop: '-60px' }}
             />
           </b>
         )}
       </CalciteLabel>
-
-      {/* Mode of Acquisition */}
-      {/* <div style={{ color: primaryLabelColor, fontSize: '1.2rem', marginLeft: '13px' }}>
-        MODE OF ACQUISITION
-      </div>
-      <div
-        id={chartID_moa}
-        style={{
-          height: '20vh',
-          backgroundColor: 'rgb(0,0,0,0)',
-          color: 'white',
-        }}
-      ></div> */}
     </>
   );
 }; // End of lotChartgs

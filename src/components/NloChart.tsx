@@ -11,12 +11,7 @@ import { generateNloData, generateNloNumber, statusNloChart, thousands_separator
 import { nloStatusField, primaryLabelColor, valueLabelColor } from '../StatusUniqueValues';
 import '@esri/calcite-components/dist/components/calcite-label';
 import { CalciteLabel } from '@esri/calcite-components-react';
-//https://codesandbox.io/s/amcharts5-react-demo-forked-gid7b0?from-embed=&file=/src/App.js:271-276
-// https://github.com/reactchartjs/react-chartjs-2/blob/master/src/chart.tsx
-//https://www.reddit.com/r/reactjs/comments/gr5vhh/react_hooks_and_amcharts4/?rdt=56344
-//https://medium.com/swlh/how-to-use-amcharts-4-with-react-hooks-999a62c185a5
-//https://codesandbox.io/s/amcharts5-react-demo-forked-hrth2d
-// Zoom
+import { useContractPackageContext } from './ContractPackageContext';
 
 // Dispose function
 function maybeDisposeRoot(divId: any) {
@@ -30,7 +25,8 @@ function maybeDisposeRoot(divId: any) {
 ///*** Others */
 
 /// Draw chart
-const NloChart = memo((props: any) => {
+const NloChart = memo(() => {
+  const { cpValueSelected } = useContractPackageContext();
   const pieSeriesRef = useRef<unknown | any | undefined>({});
   const legendRef = useRef<unknown | any | undefined>({});
   const chartRef = useRef<unknown | any | undefined>({});
@@ -49,9 +45,9 @@ const NloChart = memo((props: any) => {
 
   // Query
   const queryDefault = '1=1';
-  const queryContractp = "CP = '" + props.contractp + "'";
+  const queryContractp = "CP = '" + cpValueSelected + "'";
 
-  if (props.contractp === 'All') {
+  if (cpValueSelected === 'All') {
     nloLayer.definitionExpression = queryDefault;
   } else {
     nloLayer.definitionExpression = queryContractp;
@@ -66,7 +62,7 @@ const NloChart = memo((props: any) => {
     generateNloNumber().then((response: any) => {
       setNloNumber(response);
     });
-  }, [props.contractp]);
+  }, [cpValueSelected]);
 
   useEffect(() => {
     // Dispose previously created root element
@@ -102,7 +98,7 @@ const NloChart = memo((props: any) => {
         legendValueText: "{valuePercentTotal.formatNumber('#.')}% ({value})",
         radius: am5.percent(45), // outer radius
         innerRadius: am5.percent(28),
-        scale: 1.8,
+        scale: 2.2,
       }),
     );
     pieSeriesRef.current = pieSeries;
@@ -308,7 +304,7 @@ const NloChart = memo((props: any) => {
             alt="Land Logo"
             height={'50px'}
             width={'50px'}
-            style={{ marginLeft: '260px', display: 'flex', marginTop: '-50px' }}
+            style={{ marginLeft: '290px', display: 'flex', marginTop: '-50px' }}
           />
         </b>
       </CalciteLabel>
@@ -316,7 +312,7 @@ const NloChart = memo((props: any) => {
       <div
         id={chartID}
         style={{
-          height: '45vh',
+          height: '50vh',
           backgroundColor: 'rgb(0,0,0,0)',
           color: 'white',
           marginBottom: '-1.5vh',

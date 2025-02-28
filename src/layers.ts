@@ -2670,6 +2670,7 @@ export const buildingLayer = new BuildingSceneLayer({
   outFields: ['Category', 'Status', 'BldgLevel', 'StructureLevel', 'Types'],
   title: 'Station Structures',
 });
+// buildingLayer.listMode = 'hide';
 
 // Discipline: Architectural
 export let columnsLayer: null | any;
@@ -2752,7 +2753,7 @@ buildingLayer.when(() => {
   buildingLayer.allSublayers.forEach((layer: any) => {
     switch (layer.modelName) {
       case 'FullModel':
-        layer.visible = true;
+        layer.visible = false;
         break;
 
       case 'Overview':

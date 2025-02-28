@@ -19,6 +19,7 @@ import '../App.css';
 import { primaryLabelColor, valueLabelColor } from '../StatusUniqueValues';
 import '@esri/calcite-components/dist/components/calcite-label';
 import { CalciteLabel } from '@esri/calcite-components-react';
+import { useContractPackageContext } from './ContractPackageContext';
 
 // Dispose function
 function maybeDisposeRoot(divId: any) {
@@ -29,7 +30,8 @@ function maybeDisposeRoot(divId: any) {
   });
 }
 
-const TreeChart = (props: any) => {
+const TreeChart = () => {
+  const { cpValueSelected } = useContractPackageContext();
   // Tree cutting
   const pieSeriesRef = useRef<unknown | any | undefined>({});
   const legendRef = useRef<unknown | any | undefined>({});
@@ -63,8 +65,8 @@ const TreeChart = (props: any) => {
   const [treesNumber, setTreesNumber] = useState([]);
 
   const defaultExpression = '1=1';
-  const queryExpression = "CP = '" + props.contractp + "'";
-  if (props.contractp === 'All') {
+  const queryExpression = "CP = '" + cpValueSelected + "'";
+  if (cpValueSelected === 'All') {
     treeCuttingLayer.definitionExpression = defaultExpression;
     treeCompensationLayer.definitionExpression = defaultExpression;
   } else {
@@ -88,7 +90,7 @@ const TreeChart = (props: any) => {
     generateTreesNumber().then((response: any) => {
       setTreesNumber(response);
     });
-  }, [props.contractp]);
+  }, [cpValueSelected]);
 
   useEffect(() => {
     maybeDisposeRoot(chartID_cuting);
@@ -132,7 +134,7 @@ const TreeChart = (props: any) => {
         legendValueText: "{valuePercentTotal.formatNumber('#.')}% ({value})",
         radius: am5.percent(45), // outer radius
         innerRadius: am5.percent(28),
-        scale: 1.8,
+        scale: 2.2,
       }),
     );
     pieSeriesRef.current = pieSeries;
@@ -142,7 +144,7 @@ const TreeChart = (props: any) => {
     let inner_label = pieSeries.children.push(
       am5.Label.new(root, {
         text: '[#ffffff]{valueSum}[/]\n[fontSize: 5px; #d3d3d3; verticalAlign: super]TREES[/]',
-        fontSize: '1rem',
+        fontSize: '0.8rem',
         centerX: am5.percent(50),
         centerY: am5.percent(40),
         populateText: true,
@@ -338,7 +340,7 @@ const TreeChart = (props: any) => {
         legendValueText: "{valuePercentTotal.formatNumber('#.')}% ({value})",
         radius: am5.percent(45), // outer radius
         innerRadius: am5.percent(28),
-        scale: 1.8,
+        scale: 2.2,
       }),
     );
     pieSeriesRef_compen.current = pieSeries;
@@ -348,7 +350,7 @@ const TreeChart = (props: any) => {
     let inner_label = pieSeries.children.push(
       am5.Label.new(root, {
         text: '[#ffffff]{valueSum}[/]\n[fontSize: 5px; #d3d3d3; verticalAlign: super]TREES[/]',
-        fontSize: '1rem',
+        fontSize: '0.8rem',
         centerX: am5.percent(50),
         centerY: am5.percent(40),
         populateText: true,
@@ -559,7 +561,7 @@ const TreeChart = (props: any) => {
       <div
         id={chartID_cuting}
         style={{
-          height: '35vh',
+          height: '36vh',
           backgroundColor: 'rgb(0,0,0,0)',
           color: 'white',
         }}
@@ -567,7 +569,7 @@ const TreeChart = (props: any) => {
       <div
         id={chartID_compen}
         style={{
-          height: '35vh',
+          height: '36vh',
           backgroundColor: 'rgb(0,0,0,0)',
           color: 'white',
         }}
