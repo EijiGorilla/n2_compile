@@ -13,6 +13,7 @@ import { useEffect, useRef, useState } from 'react';
 import { basemaps, layerList } from '../Scene';
 import loadable from '@loadable/component';
 import { ContractPackageDataProvider } from './ContractPackageContext';
+import { SuperUrgentLotDataProvider } from './SuperUrgentLotContext';
 
 function ActionPanel() {
   const [activeWidget, setActiveWidget] = useState<undefined | any | unknown>(null);
@@ -198,7 +199,9 @@ function ActionPanel() {
 
       {/* Lot progress chart */}
       <ContractPackageDataProvider>
-        {nextWidget === 'charts' && nextWidget !== activeWidget && <LotProgressChart />}
+        <SuperUrgentLotDataProvider>
+          {nextWidget === 'charts' && nextWidget !== activeWidget && <LotProgressChart />}
+        </SuperUrgentLotDataProvider>
       </ContractPackageDataProvider>
 
       {/* Lot handed-over area chart */}

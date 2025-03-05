@@ -8,9 +8,9 @@ import * as am5percent from '@amcharts/amcharts5/percent';
 import am5themes_Animated from '@amcharts/amcharts5/themes/Animated';
 import am5themes_Responsive from '@amcharts/amcharts5/themes/Responsive';
 import {
+  generateHandedOverArea,
   generateHandedOverLotsNumber,
   generateLotData,
-  generateLotMoaData,
   generateLotNumber,
   highlightLot,
   highlightRemove,
@@ -18,25 +18,20 @@ import {
   zoomToLayer,
 } from '../Query';
 import '../App.css';
-import '@esri/calcite-components/dist/components/calcite-segmented-control';
-import '@esri/calcite-components/dist/components/calcite-segmented-control-item';
 import '@esri/calcite-components/dist/components/calcite-label';
 import '@esri/calcite-components/dist/components/calcite-checkbox';
-import {
-  CalciteLabel,
-  CalciteSegmentedControl,
-  CalciteSegmentedControlItem,
-  CalciteCheckbox,
-} from '@esri/calcite-components-react';
+import { CalciteLabel, CalciteCheckbox } from '@esri/calcite-components-react';
 import {
   cpField,
   lotStatusField,
   primaryLabelColor,
   querySuperUrgent,
   statusLotQuery,
+  superurgent_items,
   valueLabelColor,
 } from '../StatusUniqueValues';
 import { useContractPackageContext } from './ContractPackageContext';
+import SuperUrgentLotDisplay, { useSuperUrgentLotContext } from './SuperUrgentLotContext';
 
 // Dispose function
 function maybeDisposeRoot(divId: any) {
@@ -51,6 +46,7 @@ function maybeDisposeRoot(divId: any) {
 /// Draw chart
 const LotChart = () => {
   const { cpValueSelected } = useContractPackageContext();
+  const { superUrgentSelected } = useSuperUrgentLotContext();
 
   // 1. Land Acquisition
   const pieSeriesRef = useRef<unknown | any | undefined>({});
@@ -71,12 +67,9 @@ const LotChart = () => {
   const [lotNumber, setLotNumber] = useState([]);
   const [handedOverNumber, setHandedOverNumber] = useState([]);
 
-  // Super urgent control items
-  const superurgent_items = ['OFF', 'ON'];
-  const [superUrgentSelected, setSuperUrgentSelected] = useState<any>(superurgent_items[0]);
-
   // Handed Over View checkbox
   const [handedOverCheckBox, setHandedOverCheckBox] = useState<boolean>(false);
+  const [handedOverArea, setHandedOverArea] = useState<any>();
 
   // Query
 
@@ -102,12 +95,6 @@ const LotChart = () => {
       handedOverLotLayer.definitionExpression = querySuperUrgentCp;
     }
   }
-
-  // if (cpValueSelected === 'All') {
-  //   lotLayer.definitionExpression = queryDefault;
-  // } else {
-  //   lotLayer.definitionExpression = queryContractp;
-  // }
 
   useEffect(() => {
     if (superUrgentSelected === superurgent_items[1]) {
@@ -138,6 +125,10 @@ const LotChart = () => {
 
     generateHandedOverLotsNumber(superUrgentSelected, cpValueSelected).then((response: any) => {
       setHandedOverNumber(response);
+    });
+
+    generateHandedOverArea(superUrgentSelected, cpValueSelected).then((response: any) => {
+      setHandedOverArea(response);
     });
 
     zoomToLayer(lotLayer);
@@ -394,43 +385,7 @@ const LotChart = () => {
         </b>
       </CalciteLabel>
 
-      <div style={{ display: 'flex', marginTop: '10px' }}>
-        <div
-          style={{
-            marginLeft: '15px',
-            fontSize: '17px',
-            color: primaryLabelColor,
-            marginTop: 'auto',
-            marginBottom: 'auto',
-            marginRight: '10px',
-          }}
-        >
-          Super Urgent Lot:{' '}
-        </div>
-        <CalciteSegmentedControl
-          style={{
-            marginRight: 'auto',
-          }}
-          scale="m"
-          onCalciteSegmentedControlChange={(event: any) =>
-            setSuperUrgentSelected(event.target.selectedItem.id)
-          }
-        >
-          {superUrgentSelected &&
-            superurgent_items.map((priority: any, index: any) => {
-              return (
-                <CalciteSegmentedControlItem
-                  {...(superUrgentSelected === priority ? { checked: true } : {})}
-                  key={index}
-                  value={priority}
-                  id={priority}
-                >
-                  {priority}
-                </CalciteSegmentedControlItem>
-              );
-            })}
-        </CalciteSegmentedControl>
-      </div>
+      <SuperUrgentLotDisplay />
 
       {/* Lot Chart */}
       <div
@@ -445,68 +400,61 @@ const LotChart = () => {
       ></div>
 
       {/* Handed-Over */}
-      <div style={{ display: 'flex' }}>
+      <div
+        style={{
+          display: 'flex',
+          marginLeft: '15px',
+          marginRight: '15px',
+          justifyContent: 'space-between',
+          marginBottom: '20px',
+        }}
+      >
         <div
-          style={{
-            color: primaryLabelColor,
-            fontSize: '1.2rem',
-            marginLeft: '13px',
-            marginBottom: '13px',
-            marginRight: '10px',
-          }}
+          style={{ backgroundColor: 'green', height: '0', marginTop: '13px', marginRight: '-10px' }}
         >
-          HANDED-OVER
+          <CalciteCheckbox
+            name="handover-checkbox"
+            label="VIEW"
+            scale="l"
+            onCalciteCheckboxChange={(event: any) =>
+              setHandedOverCheckBox(handedOverCheckBox === false ? true : false)
+            }
+          ></CalciteCheckbox>
         </div>
-        <CalciteCheckbox
-          name="handover-checkbox"
-          label="VIEW"
-          style={{ width: '20px' }}
-          scale="l"
-          onCalciteCheckboxChange={(event: any) =>
-            setHandedOverCheckBox(handedOverCheckBox === false ? true : false)
-          }
-        ></CalciteCheckbox>
-        <div style={{ color: primaryLabelColor }}>View on the map</div>
+        <dl style={{ alignItems: 'center' }}>
+          <dt style={{ color: primaryLabelColor, fontSize: '1.1rem' }}>Total Handed-Over</dt>
+          <dd
+            style={{
+              color: valueLabelColor,
+              fontSize: '1.7rem',
+              fontWeight: 'bold',
+              fontFamily: 'calibri',
+              lineHeight: '1.2',
+              margin: 'auto',
+            }}
+          >
+            {handedOverNumber[0]}% ({thousands_separators(handedOverNumber[1])})
+          </dd>
+        </dl>
+        <dl style={{ alignItems: 'center' }}>
+          <dt style={{ color: primaryLabelColor, fontSize: '1.1rem' }}>Handed-Over Area</dt>
+          {/* #d3d3d3 */}
+          <dd
+            style={{
+              color: valueLabelColor,
+              fontSize: '1.7rem',
+              fontFamily: 'calibri',
+              lineHeight: '1.2',
+              margin: 'auto',
+              fontWeight: 'bold',
+            }}
+          >
+            {handedOverArea && thousands_separators(handedOverArea.toFixed(0))}
+            <label style={{ fontWeight: 'normal', fontSize: '1.3rem' }}> m</label>
+            <label style={{ verticalAlign: 'super', fontSize: '0.6rem' }}>2</label>
+          </dd>
+        </dl>
       </div>
-
-      <CalciteLabel layout="inline">
-        {handedOverNumber[0] === 'Infinity' ? (
-          <b className="permitToEnterNumber" style={{ color: valueLabelColor }}>
-            N/A
-            <img
-              src="https://EijiGorilla.github.io/Symbols/Land_Acquisition/Handed_Over.svg"
-              alt="Land Logo"
-              height={'50px'}
-              width={'50px'}
-              style={{ marginLeft: '260px', display: 'flex', marginTop: '-60px' }}
-            />
-          </b>
-        ) : (
-          <b className="permitToEnterNumber" style={{ color: valueLabelColor }}>
-            <div
-              style={{
-                color: valueLabelColor,
-                fontSize: '2rem',
-                fontWeight: 'bold',
-                fontFamily: 'calibri',
-                lineHeight: '1.2',
-                marginLeft: '15px',
-                marginTop: '-10px',
-                marginBottom: '20px',
-              }}
-            >
-              {handedOverNumber[0]}% ({thousands_separators(handedOverNumber[1])})
-            </div>
-            <img
-              src="https://EijiGorilla.github.io/Symbols/Land_Acquisition/Handed_Over.svg"
-              alt="Land Logo"
-              height={'50px'}
-              width={'50px'}
-              style={{ marginLeft: '290px', display: 'flex', marginTop: '-60px' }}
-            />
-          </b>
-        )}
-      </CalciteLabel>
     </>
   );
 }; // End of lotChartgs

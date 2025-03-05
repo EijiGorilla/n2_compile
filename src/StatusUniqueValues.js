@@ -3,6 +3,10 @@ export const superUrgentField = 'Urgent';
 export const querySuperUrgent = `${superUrgentField} = 0`;
 export const superurgent_items = ['OFF', 'ON'];
 
+export const lotHandOverDateField = 'HandOverDate';
+export const lotTargetActualField = 'TargetActual';
+export const lotTargetActualDateField = 'TargetActualDate';
+
 export const lotStatusField = 'StatusLA';
 export const lotIdField = 'LotID';
 export const percentHandedOverField = 'percentHandedOver';

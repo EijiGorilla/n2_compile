@@ -17,6 +17,7 @@ import loadable from '@loadable/component';
 
 import '../index.css';
 import '../App.css';
+import { SuperUrgentLotDataProvider } from './SuperUrgentLotContext';
 
 function MainChart() {
   const [lotLayerLoaded, setLotLayerLoaded] = useState<any>();
@@ -48,7 +49,9 @@ function MainChart() {
         {/* CalciteTab: Lot */}
         <CalciteTab>
           <ContractPackageDataProvider>
-            {lotLayerLoaded === 'loaded' && <LotChart />}
+            <SuperUrgentLotDataProvider>
+              {lotLayerLoaded === 'loaded' && <LotChart />}
+            </SuperUrgentLotDataProvider>
           </ContractPackageDataProvider>
         </CalciteTab>
 
