@@ -80,7 +80,7 @@ function ActionPanel() {
             }}
           ></CalciteAction>
 
-          {/* <CalciteAction
+          <CalciteAction
             data-action-id="charts"
             icon="graph-time-series"
             text="Progress Chart"
@@ -89,7 +89,7 @@ function ActionPanel() {
               setNextWidget(event.target.id);
               setActiveWidget(nextWidget === activeWidget ? null : nextWidget);
             }}
-          ></CalciteAction> */}
+          ></CalciteAction>
 
           <CalciteAction
             data-action-id="handedover-charts"
