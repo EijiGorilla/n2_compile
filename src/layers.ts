@@ -44,7 +44,6 @@ import {
   occupancyNameField,
   percentHandedOverField,
   strucOwnerField,
-  structureStatusField,
   superUrgentField,
   treeCommonNameField,
   treeStatusField,
@@ -68,6 +67,7 @@ import {
   utilityCompanyField,
   statusStructureLabel,
   statusStructureQuery,
+  structureStatusField,
 } from './StatusUniqueValues';
 
 /* Standalone table for Dates */
@@ -666,6 +666,7 @@ const structureRenderer = new UniqueValueRenderer({
   field: 'StatusStruc',
   uniqueValueInfos: structureRendererUniqueValueInfos,
 });
+
 export const structureLayer = new FeatureLayer({
   portalItem: {
     id: '23500954a8d84a46886e76e6e0883a69',
