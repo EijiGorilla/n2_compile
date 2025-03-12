@@ -66,6 +66,8 @@ import {
   utilityCpField,
   utilityRemarksField,
   utilityCompanyField,
+  statusStructureLabel,
+  statusStructureQuery,
 } from './StatusUniqueValues';
 
 /* Standalone table for Dates */
@@ -622,96 +624,6 @@ handedOverLotLayer.listMode = 'hide';
 const height = 5;
 const edgeSize = 0.3;
 
-const dismantled = new PolygonSymbol3D({
-  symbolLayers: [
-    new ExtrudeSymbol3DLayer({
-      size: height,
-      material: {
-        color: [0, 197, 255, 0.5],
-      },
-      edges: new SolidEdges3D({
-        color: '#4E4E4E',
-        size: edgeSize,
-      }),
-    }),
-  ],
-});
-
-const paid = new PolygonSymbol3D({
-  symbolLayers: [
-    new ExtrudeSymbol3DLayer({
-      size: height,
-      material: {
-        color: [112, 173, 71, 0.5],
-      },
-      edges: new SolidEdges3D({
-        color: '#4E4E4E',
-        size: edgeSize,
-      }),
-    }),
-  ],
-});
-
-const payp = new PolygonSymbol3D({
-  symbolLayers: [
-    new ExtrudeSymbol3DLayer({
-      size: height,
-      material: {
-        color: [0, 112, 255, 0.5],
-      },
-      edges: new SolidEdges3D({
-        color: '#4E4E4E',
-        size: edgeSize,
-      }),
-    }),
-  ],
-});
-
-const legalpass = new PolygonSymbol3D({
-  symbolLayers: [
-    new ExtrudeSymbol3DLayer({
-      size: height,
-      material: {
-        color: [255, 255, 0, 0.5],
-      },
-      edges: new SolidEdges3D({
-        color: '#4E4E4E',
-        size: edgeSize,
-      }),
-    }),
-  ],
-});
-
-const otc = new PolygonSymbol3D({
-  symbolLayers: [
-    new ExtrudeSymbol3DLayer({
-      size: height,
-      material: {
-        color: [255, 170, 0, 0.5],
-      },
-      edges: new SolidEdges3D({
-        color: '#4E4E4E',
-        size: edgeSize,
-      }),
-    }),
-  ],
-});
-
-const lbp = new PolygonSymbol3D({
-  symbolLayers: [
-    new ExtrudeSymbol3DLayer({
-      size: height,
-      material: {
-        color: [255, 87, 51, 0.6],
-      },
-      edges: new SolidEdges3D({
-        color: '#4E4E4E',
-        size: edgeSize,
-      }),
-    }),
-  ],
-});
-
 const defaultStructureRenderer = new PolygonSymbol3D({
   symbolLayers: [
     new ExtrudeSymbol3DLayer({
@@ -727,44 +639,33 @@ const defaultStructureRenderer = new PolygonSymbol3D({
   ],
 });
 
+const structureRendererUniqueValueInfos = statusStructureLabel.map((status: any, index: any) => {
+  return Object.assign({
+    value: index + 1,
+    symbol: new PolygonSymbol3D({
+      symbolLayers: [
+        new ExtrudeSymbol3DLayer({
+          size: height,
+          material: {
+            color: statusStructureQuery[index].colorLayer,
+          },
+          edges: new SolidEdges3D({
+            color: '#4E4E4E',
+            size: edgeSize,
+          }),
+        }),
+      ],
+    }),
+    label: status,
+  });
+});
+
 const structureRenderer = new UniqueValueRenderer({
   defaultSymbol: defaultStructureRenderer,
   defaultLabel: 'Other',
-  field: structureStatusField,
-  uniqueValueInfos: [
-    {
-      value: 1,
-      symbol: dismantled,
-      label: 'Dismantling/Clearing',
-    },
-    {
-      value: 2,
-      symbol: paid,
-      label: 'Paid',
-    },
-    {
-      value: 3,
-      symbol: payp,
-      label: 'For Payment Processing',
-    },
-    {
-      value: 4,
-      symbol: legalpass,
-      label: 'For Legal Pass',
-    },
-    {
-      value: 5,
-      symbol: otc,
-      label: 'For Appraisal/Offer to Compensation',
-    },
-    {
-      value: 6,
-      symbol: lbp,
-      label: 'LBP Account Opening',
-    },
-  ],
+  field: 'StatusStruc',
+  uniqueValueInfos: structureRendererUniqueValueInfos,
 });
-
 export const structureLayer = new FeatureLayer({
   portalItem: {
     id: '23500954a8d84a46886e76e6e0883a69',
