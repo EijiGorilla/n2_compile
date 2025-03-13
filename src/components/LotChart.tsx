@@ -164,10 +164,10 @@ const LotChart = () => {
         name: 'Series',
         categoryField: 'category',
         valueField: 'value',
-        legendLabelText:
-          '{category}[/] ([#C9CC3F; bold]{valuePercentTotal.formatNumber("#.")}%[/]) ',
+        // legendLabelText: "{valuePercentTotal.formatNumber('#.')}% ({value})",
+        // '{category}[/] ([#C9CC3F; bold]{valuePercentTotal.formatNumber("#.")}%[/]) '
 
-        // legendValueText: "{valuePercentTotal.formatNumber('#.')}% ({value})",
+        legendValueText: "{valuePercentTotal.formatNumber('#.')}% ({value})",
         radius: am5.percent(45), // outer radius
         innerRadius: am5.percent(28),
         scale: 2.5,
