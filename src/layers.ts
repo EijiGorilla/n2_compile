@@ -207,10 +207,10 @@ prowLayer.listMode = 'hide';
 
 /* PNR */
 let pnrRenderer = new UniqueValueRenderer({
-  valueExpression: `When($feature.${landOwnerField} == 'BASES CONVERSION DEVELOPMENT AUTHORITY', 'BCDA',$feature.${landOwnerField} == 'MANILA RAILROAD COMPANY' || $feature.${landOwnerField} == 'Manila Railroad Company','PNR', $feature.${landOwnerField})`,
+  field: 'OwnershipType',
   uniqueValueInfos: [
     {
-      value: 'BCDA',
+      value: 1, // RP
       symbol: new SimpleFillSymbol({
         color: [137, 205, 102],
         style: 'diagonal-cross',
@@ -221,7 +221,18 @@ let pnrRenderer = new UniqueValueRenderer({
       }),
     },
     {
-      value: 'PNR',
+      value: 2, // PNR
+      symbol: new SimpleFillSymbol({
+        color: [137, 205, 102],
+        style: 'diagonal-cross',
+        outline: {
+          width: 0.5,
+          color: 'black',
+        },
+      }),
+    },
+    {
+      value: 3, // BCDA
       symbol: new SimpleFillSymbol({
         color: [137, 205, 102],
         style: 'diagonal-cross',
