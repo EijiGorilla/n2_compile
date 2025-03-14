@@ -13,8 +13,14 @@ import {
   generateTotalProgress,
   thousands_separators,
   viaductTypeChart,
+  dateUpdate,
 } from '../Query';
-import { primaryLabelColor, valueLabelColor } from '../StatusUniqueValues';
+import {
+  cutoff_days,
+  primaryLabelColor,
+  updatedDateCategoryNames,
+  valueLabelColor,
+} from '../StatusUniqueValues';
 import '@esri/calcite-components/dist/components/calcite-label';
 import { CalciteLabel } from '@esri/calcite-components-react';
 import { useContractPackageContext } from './ContractPackageContext';
@@ -35,6 +41,16 @@ const ViaductChart = () => {
   const chartRef = useRef<unknown | any | undefined>({});
   const [chartData, setChartData] = useState([]);
   const [progress, setProgress] = useState([]);
+
+  // 0. Updated date
+  const [asOfDate, setAsOfDate] = useState<undefined | any | unknown>(null);
+  const [daysPass, setDaysPass] = useState<boolean>(false);
+  useEffect(() => {
+    dateUpdate(updatedDateCategoryNames[5]).then((response: any) => {
+      setAsOfDate(response[0][0]);
+      setDaysPass(response[0][1] >= cutoff_days ? true : false);
+    });
+  }, []);
 
   const chartID = 'viaduct-bar';
 
@@ -358,6 +374,20 @@ const ViaductChart = () => {
           />
         </b>
       </CalciteLabel>
+
+      {/* As of date  */}
+      <div
+        style={{
+          color: daysPass === true ? 'red' : 'gray',
+          fontSize: '0.8rem',
+          float: 'right',
+          marginRight: '5px',
+          marginTop: '5px',
+        }}
+      >
+        {!asOfDate ? '' : 'As of ' + asOfDate}
+      </div>
+
       <div
         id={chartID}
         style={{
@@ -365,8 +395,9 @@ const ViaductChart = () => {
           height: '55vh',
           backgroundColor: 'rgb(0,0,0,0)',
           color: 'white',
+          marginLeft: '20px',
           marginRight: '10px',
-          marginTop: '20px',
+          marginTop: '40px',
         }}
       ></div>
     </div>
