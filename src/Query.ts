@@ -1296,91 +1296,91 @@ export const viaductTypeChart = [
 ];
 export async function generateViaductChartData(contractp: any) {
   var total_boredpile_incomp = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN (Type = 1 and Status1 = 1) THEN 1 ELSE 0 END',
+    onStatisticField: 'CASE WHEN (Type = 1 and Status = 1) THEN 1 ELSE 0 END',
     outStatisticFieldName: 'total_boredpile_incomp',
     statisticType: 'sum',
   });
 
   var total_boredpile_comp = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN (Type = 1 and Status1 = 4) THEN 1 ELSE 0 END',
+    onStatisticField: 'CASE WHEN (Type = 1 and Status = 4) THEN 1 ELSE 0 END',
     outStatisticFieldName: 'total_boredpile_comp',
     statisticType: 'sum',
   });
 
   var total_boredpile_delay = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN (Type = 1 and Status1 = 3) THEN 1 ELSE 0 END',
+    onStatisticField: 'CASE WHEN (Type = 1 and Status = 3) THEN 1 ELSE 0 END',
     outStatisticFieldName: 'total_boredpile_delay',
     statisticType: 'sum',
   });
 
   var total_pilecap_incomp = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN (Type = 2 and Status1 = 1) THEN 1 ELSE 0 END',
+    onStatisticField: 'CASE WHEN (Type = 2 and Status = 1) THEN 1 ELSE 0 END',
     outStatisticFieldName: 'total_pilecap_incomp',
     statisticType: 'sum',
   });
 
   var total_pilecap_comp = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN (Type = 2 and Status1 = 4) THEN 1 ELSE 0 END',
+    onStatisticField: 'CASE WHEN (Type = 2 and Status = 4) THEN 1 ELSE 0 END',
     outStatisticFieldName: 'total_pilecap_comp',
     statisticType: 'sum',
   });
 
   var total_pilecap_delay = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN (Type = 2 and Status1 = 3) THEN 1 ELSE 0 END',
+    onStatisticField: 'CASE WHEN (Type = 2 and Status = 3) THEN 1 ELSE 0 END',
     outStatisticFieldName: 'total_pilecap_delay',
     statisticType: 'sum',
   });
 
   var total_pier_incomp = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN (Type = 3 and Status1 = 1) THEN 1 ELSE 0 END',
+    onStatisticField: 'CASE WHEN (Type = 3 and Status = 1) THEN 1 ELSE 0 END',
     outStatisticFieldName: 'total_pier_incomp',
     statisticType: 'sum',
   });
 
   var total_pier_comp = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN (Type = 3 and Status1 = 4) THEN 1 ELSE 0 END',
+    onStatisticField: 'CASE WHEN (Type = 3 and Status = 4) THEN 1 ELSE 0 END',
     outStatisticFieldName: 'total_pier_comp',
     statisticType: 'sum',
   });
 
   var total_pier_delay = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN (Type = 3 and Status1 = 3) THEN 1 ELSE 0 END',
+    onStatisticField: 'CASE WHEN (Type = 3 and Status = 3) THEN 1 ELSE 0 END',
     outStatisticFieldName: 'total_pier_delay',
     statisticType: 'sum',
   });
 
   var total_pierhead_incomp = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN (Type = 4 and Status1 = 1) THEN 1 ELSE 0 END',
+    onStatisticField: 'CASE WHEN (Type = 4 and Status = 1) THEN 1 ELSE 0 END',
     outStatisticFieldName: 'total_pierhead_incomp',
     statisticType: 'sum',
   });
 
   var total_pierhead_comp = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN (Type = 4 and Status1 = 4) THEN 1 ELSE 0 END',
+    onStatisticField: 'CASE WHEN (Type = 4 and Status = 4) THEN 1 ELSE 0 END',
     outStatisticFieldName: 'total_pierhead_comp',
     statisticType: 'sum',
   });
 
   var total_pierhead_delay = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN (Type = 4 and Status1 = 3) THEN 1 ELSE 0 END',
+    onStatisticField: 'CASE WHEN (Type = 4 and Status = 3) THEN 1 ELSE 0 END',
     outStatisticFieldName: 'total_pierhead_delay',
     statisticType: 'sum',
   });
 
   var total_precast_incomp = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN (Type = 5 and Status1 = 1) THEN 1 ELSE 0 END',
+    onStatisticField: 'CASE WHEN (Type = 5 and Status = 1) THEN 1 ELSE 0 END',
     outStatisticFieldName: 'total_precast_incomp',
     statisticType: 'sum',
   });
 
   var total_precast_comp = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN (Type = 5 and Status1 = 4) THEN 1 ELSE 0 END',
+    onStatisticField: 'CASE WHEN (Type = 5 and Status = 4) THEN 1 ELSE 0 END',
     outStatisticFieldName: 'total_precast_comp',
     statisticType: 'sum',
   });
 
   var total_precast_delay = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN (Type = 5 and Status1 = 3) THEN 1 ELSE 0 END',
+    onStatisticField: 'CASE WHEN (Type = 5 and Status = 3) THEN 1 ELSE 0 END',
     outStatisticFieldName: 'total_precast_delay',
     statisticType: 'sum',
   });
@@ -1483,7 +1483,7 @@ export async function generateTotalProgress(contractp: any) {
   });
 
   var total_viaduct_comp = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN Status1 = 4 THEN 1 ELSE 0 END',
+    onStatisticField: 'CASE WHEN Status = 4 THEN 1 ELSE 0 END',
     outStatisticFieldName: 'total_viaduct_comp',
     statisticType: 'sum',
   });
@@ -1513,31 +1513,31 @@ export async function generateTotalProgress(contractp: any) {
 
 export async function viaductProgressChartData(contractp: any) {
   var total_complete_pile = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN (Status1 = 4 and Type = 1) THEN 1 ELSE 0 END',
+    onStatisticField: 'CASE WHEN (Status = 4 and Type = 1) THEN 1 ELSE 0 END',
     outStatisticFieldName: 'total_complete_pile',
     statisticType: 'sum',
   });
 
   var total_complete_pilecap = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN (Status1 = 4 and Type = 2) THEN 1 ELSE 0 END',
+    onStatisticField: 'CASE WHEN (Status = 4 and Type = 2) THEN 1 ELSE 0 END',
     outStatisticFieldName: 'total_complete_pilecap',
     statisticType: 'sum',
   });
 
   var total_complete_pier = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN (Status1 = 4 and Type = 3) THEN 1 ELSE 0 END',
+    onStatisticField: 'CASE WHEN (Status = 4 and Type = 3) THEN 1 ELSE 0 END',
     outStatisticFieldName: 'total_complete_pier',
     statisticType: 'sum',
   });
 
   var total_complete_pierhead = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN (Status1 = 4 and Type = 4) THEN 1 ELSE 0 END',
+    onStatisticField: 'CASE WHEN (Status = 4 and Type = 4) THEN 1 ELSE 0 END',
     outStatisticFieldName: 'total_complete_pierhead',
     statisticType: 'sum',
   });
 
   var total_complete_precast = new StatisticDefinition({
-    onStatisticField: 'CASE WHEN (Status1 = 4 and Type = 5) THEN 1 ELSE 0 END',
+    onStatisticField: 'CASE WHEN (Status = 4 and Type = 5) THEN 1 ELSE 0 END',
     outStatisticFieldName: 'total_complete_precast',
     statisticType: 'sum',
   });

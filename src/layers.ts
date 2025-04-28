@@ -923,7 +923,7 @@ export const nloLayer = new FeatureLayer({
 
   title: 'NLO (Non-Land Owner)',
   elevationInfo: {
-    mode: 'relative-to-ground',
+    mode: 'relative-to-scene',
   },
   minScale: 10000,
   maxScale: 0,
@@ -2532,7 +2532,7 @@ const colorViaduct = [
 
 function renderViaductLayer() {
   const renderer = new UniqueValueRenderer({
-    field: 'Status1',
+    field: 'Status',
   });
 
   for (var i = 0; i < colorViaduct.length; i++) {
@@ -2558,7 +2558,7 @@ function renderViaductLayer() {
 
 export const viaductLayer = new SceneLayer({
   portalItem: {
-    id: 'd3fc705f1ec14d888214bfdbf37f1fe7',
+    id: '3c112d7fe610486eaf4df3eac07d3ea0',
     portal: {
       url: 'https://gis.railway-sector.com/portal',
     },
