@@ -310,10 +310,10 @@ const sources = [
   },
   {
     layer: pierAccessLayer,
-    searchFields: ['PIER'],
-    displayField: 'PIER',
+    searchFields: ['PierNumber'],
+    displayField: 'PierNumber',
     exactMatch: false,
-    outFields: ['PIER'],
+    outFields: ['PierNumber'],
     name: 'Pier No',
     zoomScale: 1000,
     placeholder: 'example: P-288',
